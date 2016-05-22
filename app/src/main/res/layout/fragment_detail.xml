@@ -48,6 +48,14 @@
                     android:id="@+id/movie_rating"
                     android:textSize="@dimen/movie_title"/>
 
+                <ImageButton
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/star_icon"
+                    android:src ="@android:drawable/btn_star"
+                    android:background="#00ffffff"
+                    android:onClick="handleChange"/>
+
             </LinearLayout>
 
         </LinearLayout>

@@ -7,6 +7,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
 
+import com.example.abhijeetsinghkgp.popularmovies.data.MovieProvider;
+
 import org.json.JSONException;
 
 import java.io.BufferedReader;
@@ -14,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +25,23 @@ import java.util.List;
  * Created by Abhijeet on 12-03-2016.
  */
 public class FetchMoviesTask extends AsyncTask<String, Void, List<MovieData> >{
+    public static final String YES = "Y";
+    public static final String NO = "N";
+    private static final String POPULAR = "popular?";
+    private static final String HIGHEST_RATED = "top_rated?";
+    public static final String MOVIE_TYPE_POPULAR = "POPULAR";
+    public static final String MOVIE_TYPE_TOP_RATED = "TOP_RATED";
+    private static final String REVIEWS = "reviews";
+    private static final String TRAILERS = "videos";
+    private static final String MOVIE_BASE_URL = "http://api.themoviedb.org/3/movie/";
+    private static final String API_KEY = "api_key";
+    private static final String APPEND_TO_RESPONSE = "append_to_response";
+    private static final Uri popularBuiltUri = Uri.parse(MOVIE_BASE_URL + POPULAR).buildUpon()
+            .appendQueryParameter(API_KEY, BuildConfig.THE_MOVIE_DB_API_KEY)
+            .build();
+    private static final Uri topRatedBuiltUri = Uri.parse(MOVIE_BASE_URL + HIGHEST_RATED).buildUpon()
+            .appendQueryParameter(API_KEY, BuildConfig.THE_MOVIE_DB_API_KEY)
+            .build();
     private static final String LOG_TAG = FetchMoviesTask.class.getSimpleName();
     private MovieAdapter moviesAdapter;
     private Context mContext;
@@ -46,7 +66,73 @@ public class FetchMoviesTask extends AsyncTask<String, Void, List<MovieData> >{
      */
     @Override
     protected List<MovieData> doInBackground(String... params) {
+        //android.os.Debug.waitForDebugger();
         List<MovieData> movieDataList = new ArrayList<>();
+
+
+        //Log.v("TMDB API REQ", builtUri.toString());
+        URL url = null;
+        MovieDataParser movieDataParser = new MovieDataParser();
+        try {
+            url = new URL(topRatedBuiltUri.toString());
+            String movieTopJsonStr = getMovieDetailsFromAPI(url);
+            movieDataParser.getMovieDataFromJson(movieDataList, movieTopJsonStr, MOVIE_TYPE_TOP_RATED);
+
+            url = new URL(popularBuiltUri.toString());
+            String moviePopJsonStr = getMovieDetailsFromAPI(url);
+            movieDataParser.getMovieDataFromJson(movieDataList, moviePopJsonStr, MOVIE_TYPE_POPULAR);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }catch (JSONException e) {
+            Log.e(LOG_TAG, e.getMessage(), e);
+            e.printStackTrace();
+        }
+        List<String> movieDetailJsonStrList = new ArrayList<>();
+        URL movieDetailUrl = null;
+
+        for(int i = 0; i < movieDataList.size(); i++){
+            try {
+                movieDetailUrl = new URL(Uri.parse(MOVIE_BASE_URL + movieDataList.get(i).getId()).buildUpon()
+                        .appendQueryParameter(API_KEY, BuildConfig.THE_MOVIE_DB_API_KEY)
+                        .appendQueryParameter(APPEND_TO_RESPONSE, REVIEWS + "," + TRAILERS)
+                        .build().toString());
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            movieDetailJsonStrList.add(getMovieDetailsFromAPI(movieDetailUrl));
+        }
+        try {
+            movieDataParser.getMovieDetailData(movieDataList, movieDetailJsonStrList);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        movieDataParser.insertIntoDB(movieDataList, mContext);
+        return movieDataList;
+    }
+
+    /**
+     * <p>Runs on the UI thread after {@link #doInBackground}. The
+     * specified result is the value returned by {@link #doInBackground}.</p>
+     * <p/>
+     * <p>This method won't be invoked if the task was cancelled.</p>
+     *
+     * @param movieDataList The result of the operation computed by {@link #doInBackground}.
+     * @see #onPreExecute
+     * @see #doInBackground
+     * @see #onCancelled(Object)
+     */
+    @Override
+    protected void onPostExecute(List<MovieData> movieDataList) {
+        super.onPostExecute(movieDataList);
+
+//        moviesAdapter = new MovieAdapter(mContext, movieDataList);
+//        // Get a reference to the GridView, and attach this adapter to it.
+        GridView gridView = (GridView) movieView;
+        mContext.getContentResolver().notifyChange(MovieProvider.Movies.CONTENT_URI, null);
+    }
+
+    private String getMovieDetailsFromAPI(URL url){
         // These two need to be declared outside the try/catch
         // so that they can be closed in the finally block.
         HttpURLConnection urlConnection = null;
@@ -57,14 +143,7 @@ public class FetchMoviesTask extends AsyncTask<String, Void, List<MovieData> >{
 
         try {
             // Construct the URL for the themoviedb api query
-            final String MOVIE_BASE_URL =
-                    "http://api.themoviedb.org/3/movie/";
-            final String API_KEY = "api_key";
-            Uri builtUri = Uri.parse(MOVIE_BASE_URL + params[0]).buildUpon()
-                    .appendQueryParameter(API_KEY, BuildConfig.THE_MOVIE_DB_API_KEY)
-                    .build();
-            //Log.v("TMDB API REQ", builtUri.toString());
-            URL url = new URL(builtUri.toString());
+
 
             // Create the request to themoviedb, and open the connection
             urlConnection = (HttpURLConnection) url.openConnection();
@@ -94,44 +173,17 @@ public class FetchMoviesTask extends AsyncTask<String, Void, List<MovieData> >{
                 return null;
             }
             movieJsonStr = buffer.toString();
-            movieDataList = new MovieDataParser().getMovieDataFromJson(movieJsonStr);
+
+
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
             // If the code didn't successfully get the movie data, there's no point in attempting
             // to parse it.
-        }
-        catch (JSONException e) {
-            Log.e(LOG_TAG, e.getMessage(), e);
-            e.printStackTrace();
-        }finally {
+        } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
             }
+            return movieJsonStr;
         }
-
-        return movieDataList;
-    }
-
-
-
-    /**
-     * <p>Runs on the UI thread after {@link #doInBackground}. The
-     * specified result is the value returned by {@link #doInBackground}.</p>
-     * <p/>
-     * <p>This method won't be invoked if the task was cancelled.</p>
-     *
-     * @param movieDataList The result of the operation computed by {@link #doInBackground}.
-     * @see #onPreExecute
-     * @see #doInBackground
-     * @see #onCancelled(Object)
-     */
-    @Override
-    protected void onPostExecute(List<MovieData> movieDataList) {
-        super.onPostExecute(movieDataList);
-
-        moviesAdapter = new MovieAdapter(mContext, movieDataList);
-        // Get a reference to the GridView, and attach this adapter to it.
-        GridView gridView = (GridView) movieView;
-        gridView.setAdapter(moviesAdapter);
     }
 }

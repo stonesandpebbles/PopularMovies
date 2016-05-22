@@ -3,6 +3,8 @@ package com.example.abhijeetsinghkgp.popularmovies;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.List;
+
 /**
  * Created by Abhijeet on 12-03-2016.
  */
@@ -13,6 +15,61 @@ public class MovieData implements Parcelable{
     private String plot;
     private String rating;
     private String releaseDate;
+    private String id;
+    private List<TrailerData> trailerDataList;
+    private List<ReviewData> reviewDataList;
+    private String popularSw = FetchMoviesTask.NO;
+    private String topRatedSw = FetchMoviesTask.NO;
+    private String bookMarkedSw = FetchMoviesTask.NO;
+
+    public String getPopularSw() {
+        return popularSw;
+    }
+
+    public void setPopularSw(String popularSw) {
+        this.popularSw = popularSw;
+    }
+
+    public String getTopRatedSw() {
+        return topRatedSw;
+    }
+
+    public void setTopRatedSw(String topRatedSw) {
+        this.topRatedSw = topRatedSw;
+    }
+
+    public String getBookMarkedSw() {
+        return bookMarkedSw;
+    }
+
+    public void setBookMarkedSw(String bookMarkedSw) {
+        this.bookMarkedSw = bookMarkedSw;
+    }
+
+
+    public List<TrailerData> getTrailerDataList() {
+        return trailerDataList;
+    }
+
+    public void setTrailerDataList(List<TrailerData> trailerDataList) {
+        this.trailerDataList = trailerDataList;
+    }
+
+    public List<ReviewData> getReviewDataList() {
+        return reviewDataList;
+    }
+
+    public void setReviewDataList(List<ReviewData> reviewDataList) {
+        this.reviewDataList = reviewDataList;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public MovieData(){
 
@@ -24,6 +81,12 @@ public class MovieData implements Parcelable{
         plot = in.readString();
         rating = in.readString();
         releaseDate = in.readString();
+        id = in.readString();
+        backdropImageUrl = in.readString();
+        popularSw = in.readString();
+        bookMarkedSw = in.readString();
+        topRatedSw = in.readString();
+        //reviewDataList = in.read
     }
 
 
@@ -102,6 +165,12 @@ public class MovieData implements Parcelable{
         dest.writeString(plot);
         dest.writeString(rating);
         dest.writeString(releaseDate);
+        dest.writeString(id);
+        dest.writeString(backdropImageUrl);
+
+        dest.writeString(popularSw);
+        dest.writeString(bookMarkedSw);
+        dest.writeString(topRatedSw);
 
     }
 

@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -41,6 +42,9 @@ public class DetailActivityFragment extends Fragment {
         TextView movieTitle = (TextView)rootView.findViewById(R.id.movie_title);
         movieTitle.setText(movieData.getTitle());
         ImageView movieIcon = (ImageView)rootView.findViewById(R.id.movie_icon);
+        ImageButton starIcon = (ImageButton)rootView.findViewById(R.id.star_icon);
+        int starBackgroundColor = movieData.getBookMarkedSw().equalsIgnoreCase(FetchMoviesTask.YES)? R.color.yellow : R.color.grey;
+        starIcon.setBackgroundColor(getResources().getColor(starBackgroundColor));
 
         Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME)
@@ -73,4 +77,5 @@ public class DetailActivityFragment extends Fragment {
 
         return rootView;
     }
+
 }

@@ -12,4 +12,10 @@
         android:orderInCategory="98"
         android:title="@string/action_sort_popular"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_sort_favourite"
+        android:orderInCategory="97"
+        android:title="@string/action_sort_favourite"
+        app:showAsAction="never" />
 </menu>
