@@ -1,3 +1,96 @@
 <?xml version="1.0" encoding="utf-8"?>
-<items version="2" />
+<items version="2" >
 
+    <item
+        jar="D:\github\PopularMovies\app\build\intermediates\incremental-runtime-classes\debug\instant-run.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="5a9ca36103e2d077daa2833b02807b1e59e4a9ae">
+        <dex dex="D:\github\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_9cabcdd5d34ba6961866446588e54c80ad49418c\classes.dex" />
+    </item>
+    <item
+        jar="D:\github\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\support-vector-drawable\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="c2c594cace5d83a3227b2b6e658ecbfd586d3ed9">
+        <dex dex="D:\github\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-vector-drawable-23.4.0_6bd7e875380b6938e8686ce497152e827181b878\classes.dex" />
+    </item>
+    <item
+        jar="D:\github\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="548f06de403a9409f00554b3ee12a9fdea0e236c">
+        <dex dex="D:\github\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-appcompat-v7-23.4.0_8d73ae4e8c6a554ad75f6eb289325031166a1d10\classes.dex" />
+    </item>
+    <item
+        jar="D:\github\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.4.0\jars\libs\internal_impl-23.4.0.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="ea3c07504d2c8f4b13aa17c45c1b68ed9c1c3674">
+        <dex dex="D:\github\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\internal_impl-23.4.0_a10653f3eac0bd1742e19d7d9a321e297408dff7\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\Abhijeet\.gradle\caches\modules-2\files-2.1\com.squareup.picasso\picasso\2.5.2\7446d06ec8d4f7ffcc53f1da37c95f200dcb9387\picasso-2.5.2.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="7446d06ec8d4f7ffcc53f1da37c95f200dcb9387">
+        <dex dex="D:\github\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\picasso-2.5.2_53be0871caa4ec643af51bbffd9789c45d438f7e\classes.dex" />
+    </item>
+    <item
+        jar="D:\github\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\support-v4\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="67bd36ee9340ec7c254108936ad16b24bed160cc">
+        <dex dex="D:\github\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-v4-23.4.0_5bd1a1b35d99d815330b602da9df7a8dee89e149\classes.dex" />
+    </item>
+    <item
+        jar="D:\github\PopularMovies\app\build\intermediates\exploded-aar\net.simonvt.schematic\schematic\0.6.3\jars\classes.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="f6f5730f19d22f177096c8d134d4892b0fbd631d">
+        <dex dex="D:\github\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\net.simonvt.schematic-schematic-0.6.3_f09f19a8a2dab4e59dc013e1b16fb2c5a7fe70ee\classes.dex" />
+    </item>
+    <item
+        jar="D:\Android-Studio\sdk\extras\android\m2repository\com\android\support\support-annotations\23.4.0\support-annotations-23.4.0.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="ffbe55fdb2bb456b1485831706a9eac3300bb6b8">
+        <dex dex="D:\github\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\support-annotations-23.4.0_ad456191fb58deec80e8f24c71a052c61759a8e2\classes.dex" />
+    </item>
+    <item
+        jar="D:\github\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\design\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="5326d9a850d491714fef8cbfaa9ea3416f0bf0d2">
+        <dex dex="D:\github\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-design-23.4.0_8747c8069c22f044b904256ed459cf4846cf4196\classes.dex" />
+    </item>
+    <item
+        jar="C:\Users\Abhijeet\.gradle\caches\modules-2\files-2.1\net.simonvt.schematic\schematic-annotations\0.6.3\4df5a4bbbacf9ea3c4aebf7d3c61465afb648e36\schematic-annotations-0.6.3.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="4df5a4bbbacf9ea3c4aebf7d3c61465afb648e36">
+        <dex dex="D:\github\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\schematic-annotations-0.6.3_51b5333c470fddc37810176f93f01855531afa77\classes.dex" />
+    </item>
+    <item
+        jar="D:\github\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\recyclerview-v7\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="ec75036c3c52e451d0cde50a5aedaf5fd32354a0">
+        <dex dex="D:\github\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-recyclerview-v7-23.4.0_713a4b208ff8b7dd605676210e416e0796723346\classes.dex" />
+    </item>
+    <item
+        jar="D:\github\PopularMovies\app\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="363e7d2b5276905a93a19c6297f890344a83b007">
+        <dex dex="D:\github\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_3faf2b2d3fd9220c600f4f4baf488a7a2f7140a8\classes.dex" />
+    </item>
+    <item
+        jar="D:\github\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\animated-vector-drawable\23.4.0\jars\classes.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="de4db3785756bfb0915a9f59a9b3f2fea7407be4">
+        <dex dex="D:\github\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-animated-vector-drawable-23.4.0_abea9e44ba037e0fd5c77d00359c27bc08be48ea\classes.dex" />
+    </item>
+
+</items>

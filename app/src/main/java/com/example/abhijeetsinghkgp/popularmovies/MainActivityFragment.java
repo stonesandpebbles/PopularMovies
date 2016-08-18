@@ -196,7 +196,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 startActivity(intent);
             }
         });
-        new FetchMoviesTask(getView(), getActivity()).execute();
+        //new FetchMoviesTask(getView(), getActivity()).execute();
         return rootView;
     }
 
