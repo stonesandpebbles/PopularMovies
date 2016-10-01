@@ -37,8 +37,8 @@
         </activity>
 
         <provider
-            android:name=".data.generated.MovieProvider"
             android:authorities="com.example.abhijeetsinghkgp.popularmovies.data.MovieProvider"
+            android:name="com.example.abhijeetsinghkgp.popularmovies.data.MovieProvider"
             android:exported="false" />
 
         <!-- SyncAdapter's dummy authentication service -->

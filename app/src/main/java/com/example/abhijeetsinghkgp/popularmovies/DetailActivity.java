@@ -9,10 +9,11 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import com.example.abhijeetsinghkgp.popularmovies.data.MovieColumns;
-import com.example.abhijeetsinghkgp.popularmovies.data.MovieProvider;
+import com.example.abhijeetsinghkgp.popularmovies.data.MovieProviderGenerator;
 
 public class DetailActivity extends AppCompatActivity {
     private static final String MOVIE_DATA = "MovieData";
+    private static final String MOVIE_DATA_BOOKMARKED = "MovieDataBookMarked";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +59,7 @@ public class DetailActivity extends AppCompatActivity {
         movieValues.put(MovieColumns.MOVIE_RELEASE, movieData.getReleaseDate());
         movieValues.put(MovieColumns.MOVIE_TITLE, movieData.getTitle());
         movieValues.put(MovieColumns.POSTER_IMG_URL, movieData.getPosterImageUrl());
-        getContentResolver().update(MovieProvider.Movies.withId(movieData.getId()), movieValues, null , null);
+        getContentResolver().update(MovieProviderGenerator.Movies.withId(movieData.getId()), movieValues, null , null);
+        getSupportParentActivityIntent().putExtra(MOVIE_DATA_BOOKMARKED, movieData);
     }
 }

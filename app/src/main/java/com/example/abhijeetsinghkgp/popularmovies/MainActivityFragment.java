@@ -21,7 +21,7 @@ import android.widget.CursorAdapter;
 import android.widget.GridView;
 
 import com.example.abhijeetsinghkgp.popularmovies.data.MovieColumns;
-import com.example.abhijeetsinghkgp.popularmovies.data.MovieProvider;
+import com.example.abhijeetsinghkgp.popularmovies.data.MovieProviderGenerator;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -29,6 +29,7 @@ import com.example.abhijeetsinghkgp.popularmovies.data.MovieProvider;
 public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
     private MovieAdapter moviesAdapter;
     private static final String MOVIE_DATA = "MovieData";
+    private static final String MOVIE_DATA_BOOKMARKED = "MovieDataBookMarked";
     private static final int LANDSCAPE_COL = 3;
     private static final int POTRAIT_COL = 2;
     private static final int LOADER_ID = 12345;
@@ -161,6 +162,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         View rootView =  inflater.inflate(R.layout.fragment_main, container, false);
         GridView gridView = (GridView) rootView.findViewById(R.id.movies_grid);
         moviesAdapter = new MovieAdapter(getActivity(), null, 0);
+
         if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
             gridView.setNumColumns(LANDSCAPE_COL);
         }
@@ -177,17 +179,24 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 Cursor cursor =  (Cursor)parent.getAdapter().getItem(position);
                 MovieData movieData = new MovieData();
                 if(cursor != null){
-                    movieData.setId(cursor.getString(cursor.getColumnIndex(MovieColumns._ID)));
+                    String movieId = cursor.getString(cursor.getColumnIndex(MovieColumns._ID));
+                    movieData.setId(movieId);
                     movieData.setTitle(cursor.getString(cursor.getColumnIndex(MovieColumns.MOVIE_TITLE)));
                     movieData.setBackdropImageUrl(cursor.getString(cursor.getColumnIndex(MovieColumns.BACKDROP_IMG_URL)));
                     movieData.setPlot(cursor.getString(cursor.getColumnIndex(MovieColumns.MOVIE_PLOT)));
                     movieData.setPosterImageUrl(cursor.getString(cursor.getColumnIndex(MovieColumns.POSTER_IMG_URL)));
                     movieData.setReleaseDate(cursor.getString(cursor.getColumnIndex(MovieColumns.MOVIE_RELEASE)));
                     movieData.setRating(cursor.getString(cursor.getColumnIndex(MovieColumns.MOVIE_RATING)));
+
                     movieData.setBookMarkedSw(cursor.getString(cursor.getColumnIndex(MovieColumns.BOOKMARKED_SW)));
                     movieData.setPopularSw(cursor.getString(cursor.getColumnIndex(MovieColumns.POPULAR_SW)));
                     movieData.setTopRatedSw(cursor.getString(cursor.getColumnIndex(MovieColumns.TOP_RATED_SW)));
 
+                }
+                if(getActivity().getIntent().hasExtra(MOVIE_DATA_BOOKMARKED)){
+                    MovieData movieDataIfBookMarked = getActivity().getIntent().getParcelableExtra(MOVIE_DATA_BOOKMARKED);
+                    if(movieDataIfBookMarked.getId().equalsIgnoreCase(movieData.getId()))
+                        movieData.setBookMarkedSw(movieDataIfBookMarked.getBookMarkedSw());
                 }
                 //Create intent
                 Intent intent = new Intent(getActivity(), DetailActivity.class);
@@ -210,21 +219,21 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
        if(queryOption.equalsIgnoreCase(MovieColumns.POPULAR_SW)) {
-           return new CursorLoader(getActivity(), MovieProvider.Movies.withPopular(FetchMoviesTask.YES),
+           return new CursorLoader(getActivity(), MovieProviderGenerator.Movies.withPopular(FetchMoviesTask.YES),
                    null,
                    null,
                    null,
                    null);
        }
         else if(queryOption.equalsIgnoreCase(MovieColumns.TOP_RATED_SW)) {
-           return new CursorLoader(getActivity(), MovieProvider.Movies.withTopRated(FetchMoviesTask.YES),
+           return new CursorLoader(getActivity(), MovieProviderGenerator.Movies.withTopRated(FetchMoviesTask.YES),
                    null,
                    null,
                    null,
                    null);
        }
         else {
-           return new CursorLoader(getActivity(), MovieProvider.Movies.withBookMarked(FetchMoviesTask.YES),
+           return new CursorLoader(getActivity(), MovieProviderGenerator.Movies.withBookMarked(FetchMoviesTask.YES),
                    null,
                    null,
                    null,

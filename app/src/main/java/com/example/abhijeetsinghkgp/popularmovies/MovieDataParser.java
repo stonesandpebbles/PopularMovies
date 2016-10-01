@@ -1,5 +1,6 @@
 package com.example.abhijeetsinghkgp.popularmovies;
 
+import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteConstraintException;
@@ -7,7 +8,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.example.abhijeetsinghkgp.popularmovies.data.MovieColumns;
-import com.example.abhijeetsinghkgp.popularmovies.data.MovieProvider;
+import com.example.abhijeetsinghkgp.popularmovies.data.MovieProviderGenerator;
 import com.example.abhijeetsinghkgp.popularmovies.data.MovieReviewColumns;
 import com.example.abhijeetsinghkgp.popularmovies.data.MovieTrailerColumns;
 
@@ -157,9 +158,9 @@ public class MovieDataParser {
             }
             movieCvVector.add(movieValues);
         }
-        insertData(MovieProvider.Movies.CONTENT_URI, movieCvVector, context);
-       insertData(MovieProvider.MovieTrailers.CONTENT_URI, movieTrCvVector, context);
-       insertData(MovieProvider.MovieReviews.CONTENT_URI, movieRevCvVector, context);
+        insertData(MovieProviderGenerator.Movies.CONTENT_URI, movieCvVector, context);
+       insertData(MovieProviderGenerator.MovieTrailers.CONTENT_URI, movieTrCvVector, context);
+       insertData(MovieProviderGenerator.MovieReviews.CONTENT_URI, movieRevCvVector, context);
 
 
     }
@@ -173,6 +174,8 @@ public class MovieDataParser {
             cVVector.toArray(cvArray);
             try {
                 // delete old data so we don't build up an endless history
+                ContentResolver cr = context.getContentResolver();
+                cr.getClass();
                 context.getContentResolver().delete(uri, null, null);
                 inserted = context.getContentResolver().bulkInsert(uri, cvArray);
             }

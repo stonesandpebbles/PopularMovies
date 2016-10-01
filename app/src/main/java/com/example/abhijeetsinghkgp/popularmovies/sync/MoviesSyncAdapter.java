@@ -30,7 +30,7 @@ import com.example.abhijeetsinghkgp.popularmovies.MovieAdapter;
 import com.example.abhijeetsinghkgp.popularmovies.MovieData;
 import com.example.abhijeetsinghkgp.popularmovies.MovieDataParser;
 import com.example.abhijeetsinghkgp.popularmovies.R;
-import com.example.abhijeetsinghkgp.popularmovies.data.MovieProvider;
+import com.example.abhijeetsinghkgp.popularmovies.data.MovieProviderGenerator;
 
 import org.json.JSONException;
 
@@ -51,7 +51,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
     // Interval at which to sync with the weather, in seconds.
     // 60 seconds (1 minute) * 180 = 3 hours
-    public static final int SYNC_INTERVAL = 30;
+    public static final int SYNC_INTERVAL = 60*60*24;
     public static final int SYNC_FLEXTIME = SYNC_INTERVAL/3;
 
     private static final long DAY_IN_MILLIS = 1000 * 24;
@@ -85,9 +85,6 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
         //checking the last update and notify if it' the first of the day
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 
-        //String displayNotificationsKey = context.getString(notifications_new_message);
-//        boolean displayNotifications = prefs.getBoolean(displayNotificationsKey,
-//                Boolean.parseBoolean(context.getString(R.string.pref_enable_notifications_default)));
 
         boolean displayNotifications = prefs.getBoolean("notifications_new_message",
                 true);
@@ -97,25 +94,13 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
             long lastSync = prefs.getLong(lastNotificationKey, 0);
 
             if (System.currentTimeMillis() - lastSync >= DAY_IN_MILLIS) {
-                // Last sync was more than 1 day ago, let's send a notification with the weather.
-                //String locationQuery = Utility.getPreferredLocation(context);
+                // Last sync was more than 1 day ago, let's send a notification with the movies.
 
-                //Uri weatherUri = WeatherContract.WeatherEntry.buildWeatherLocationWithDate(locationQuery, System.currentTimeMillis());
-
-                // we'll query our contentProvider, as always
-               // Cursor cursor = context.getContentResolver().query(weatherUri, NOTIFY_WEATHER_PROJECTION, null, null, null);
-
-//                if (cursor.moveToFirst()) {
-//                    int weatherId = cursor.getInt(INDEX_WEATHER_ID);
-//                    double high = cursor.getDouble(INDEX_MAX_TEMP);
-//                    double low = cursor.getDouble(INDEX_MIN_TEMP);
-//                    String desc = cursor.getString(INDEX_SHORT_DESC);
-//
                     int iconId = R.mipmap.movie_launcher;
                     String title = context.getString(R.string.app_name);
 
                     // Define the text of the forecast.
-                    String contentText = "Movie Database updated";
+                    String contentText = context.getString(R.string.notification_message);
 
                     //build your notification here.
                     NotificationCompat.Builder mBuilder =
@@ -208,9 +193,9 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
             e.printStackTrace();
         }
 
-        movieDataParser.insertIntoDB(movieDataList, mContext);
+        movieDataParser.insertIntoDB(movieDataList, getContext());
         GridView gridView = (GridView) movieView;
-        mContext.getContentResolver().notifyChange(MovieProvider.Movies.CONTENT_URI, null);
+        getContext().getContentResolver().notifyChange(MovieProviderGenerator.Movies.CONTENT_URI, null);
         notifyMovies();
 
     }
@@ -286,41 +271,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
 
 
-//    /**
-//     * Helper method to handle insertion of a new location in the weather database.
-//     *
-//     * @param locationSetting The location string used to request updates from the server.
-//     * @param cityName A human-readable city name, e.g "Mountain View"
-//     * @param lat the latitude of the city
-//     * @param lon the longitude of the city
-//     * @return the row ID of the added location.
-//     */
-//    long addLocation(String locationSetting, String cityName, double lat, double lon) {
-//        // Students: First, check if the location with this city name exists in the db
-//        long locationID;
-//        Cursor cursor = getContext().getContentResolver().query(WeatherContract.LocationEntry.CONTENT_URI,
-//                new String[]{WeatherContract.LocationEntry._ID},
-//                WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING + " = ?",
-//                new String[]{locationSetting},
-//                null);
-//        // If it exists, return the current ID
-//        if(cursor.moveToFirst()){
-//            int locationIdIndex = cursor.getColumnIndex(WeatherContract.LocationEntry._ID);
-//            locationID = cursor.getLong(locationIdIndex);
-//        }
-//        // Otherwise, insert it using the content resolver and the base URI
-//        else{
-//            ContentValues contentValues = new ContentValues();
-//            contentValues.put(WeatherContract.LocationEntry.COLUMN_CITY_NAME, cityName);
-//            contentValues.put(WeatherContract.LocationEntry.COLUMN_COORD_LAT, lat);
-//            contentValues.put(WeatherContract.LocationEntry.COLUMN_COORD_LONG, lon);
-//            contentValues.put(WeatherContract.LocationEntry.COLUMN_LOCATION_SETTING, locationSetting);
-//            Uri insertedUri = getContext().getContentResolver().insert(WeatherContract.LocationEntry.CONTENT_URI, contentValues);
-//            locationID = ContentUris.parseId(insertedUri);
-//        }
-//        cursor.close();
-//        return locationID;
-//    }
+
 
     /**
      * Helper method to schedule the sync adapter periodic execution

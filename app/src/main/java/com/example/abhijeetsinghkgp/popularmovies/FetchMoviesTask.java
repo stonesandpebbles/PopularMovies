@@ -7,7 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
 
-import com.example.abhijeetsinghkgp.popularmovies.data.MovieProvider;
+import com.example.abhijeetsinghkgp.popularmovies.data.MovieProviderGenerator;
 
 import org.json.JSONException;
 
@@ -129,7 +129,7 @@ public class FetchMoviesTask extends AsyncTask<String, Void, List<MovieData> >{
 //        moviesAdapter = new MovieAdapter(mContext, movieDataList);
 //        // Get a reference to the GridView, and attach this adapter to it.
         GridView gridView = (GridView) movieView;
-        mContext.getContentResolver().notifyChange(MovieProvider.Movies.CONTENT_URI, null);
+        mContext.getContentResolver().notifyChange(MovieProviderGenerator.Movies.CONTENT_URI, null);
     }
 
     private String getMovieDetailsFromAPI(URL url){

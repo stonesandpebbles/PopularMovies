@@ -12,7 +12,7 @@ public interface MovieTrailerColumns {
 
     @DataType(DataType.Type.TEXT) @PrimaryKey
     public static final String _ID = "_id";
-    @DataType(DataType.Type.TEXT) @References(table = MovieDatabase.MOVIES, column = MovieColumns._ID)
+    @DataType(DataType.Type.TEXT) @References(table = MovieDatabaseGenerator.MOVIES, column = MovieColumns._ID)
     public static final String MOVIE_ID = "movie_id";
     @DataType(DataType.Type.TEXT) @NotNull
     public static final String TRAILER_URL = "trailer_url";
