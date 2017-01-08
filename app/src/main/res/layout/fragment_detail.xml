@@ -67,5 +67,49 @@
             android:textSize="@dimen/activity_horizontal_margin"
             android:padding="@dimen/activity_horizontal_margin"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:id="@+id/trailer_title"
+            android:text="@string/trailers"
+            android:textSize="@dimen/trailer_heading"
+            android:layout_weight="1"
+            android:textStyle="bold"
+            android:paddingTop="@dimen/activity_horizontal_margin"
+            android:paddingBottom="@dimen/activity_horizontal_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment"
+            android:id="@+id/trailer_view"
+            android:scrollbars="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingRight="@dimen/activity_horizontal_margin">
+
+        </android.support.v7.widget.RecyclerView>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/review_title"
+            android:text="@string/reviews"
+            android:textSize="@dimen/trailer_heading"
+            android:textStyle="bold"
+            android:paddingTop="@dimen/activity_horizontal_margin"
+            android:paddingBottom="@dimen/activity_horizontal_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"/>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/review_view"
+            android:scrollbars="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingBottom="@dimen/activity_horizontal_margin">
+
+        </android.support.v7.widget.RecyclerView>
+
     </LinearLayout>
 </ScrollView>

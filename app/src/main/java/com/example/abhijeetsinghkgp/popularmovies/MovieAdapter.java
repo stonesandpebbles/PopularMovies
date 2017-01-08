@@ -18,7 +18,7 @@ import com.squareup.picasso.Picasso;
 public class MovieAdapter extends CursorAdapter {
     private static final String SCHEME = "http";
     private static final String IMAGE_BASE_URL = "image.tmdb.org";
-    private static final String IMAGE_SIZE = "w342";
+    private static final String IMAGE_SIZE = "w500";
     private static final String PATH_P = "p";
     private static final String PATH_T = "t";
     private Context mContext;
@@ -27,7 +27,7 @@ public class MovieAdapter extends CursorAdapter {
      *
      * @param context  The current context.
      */
-    public MovieAdapter(Context context, Cursor c, int flags) {
+    public  MovieAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
         mContext = context;
     }

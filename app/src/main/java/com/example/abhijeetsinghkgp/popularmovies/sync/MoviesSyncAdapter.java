@@ -152,7 +152,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
     public void onPerformSync(Account account, Bundle extras, String authority, ContentProviderClient provider, SyncResult syncResult) {
         Log.d(LOG_TAG, "onPerformSync Called.");
 
-        android.os.Debug.waitForDebugger();
+        //android.os.Debug.waitForDebugger();
         List<MovieData> movieDataList = new ArrayList<>();
 
 

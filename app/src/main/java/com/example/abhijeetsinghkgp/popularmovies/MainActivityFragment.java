@@ -171,8 +171,8 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         }
         //if(!movieDataList.isEmpty()){
             gridView.setAdapter(moviesAdapter);
-       // }
 
+       // }
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {

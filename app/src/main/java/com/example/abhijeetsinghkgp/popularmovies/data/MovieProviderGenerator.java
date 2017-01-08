@@ -106,7 +106,6 @@ public final class MovieProviderGenerator {
                 path = Path.MOVIE_TRAILERS + "/#",
                 type = "vnd.android.cursor.dir/list",
                 whereColumn = MovieTrailerColumns.MOVIE_ID,
-                join = MovieDatabaseGenerator.MOVIE_REVIEWS,
                 pathSegment = 1)
         public static Uri withId(String id){
             return buildUri(Path.MOVIE_TRAILERS, id);
