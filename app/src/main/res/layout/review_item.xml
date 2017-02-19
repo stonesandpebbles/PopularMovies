@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent">
+<LinearLayout
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,10 +14,12 @@
         android:textSize="@dimen/activity_horizontal_margin"
         android:textStyle="bold"
         android:id="@+id/author_name"
-        android:paddingBottom="@dimen/activity_horizontal_margin"/>
+        android:paddingBottom="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"/>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="@dimen/activity_horizontal_margin"
         android:id="@+id/content"/>
 </LinearLayout>
+</android.support.v4.widget.NestedScrollView>

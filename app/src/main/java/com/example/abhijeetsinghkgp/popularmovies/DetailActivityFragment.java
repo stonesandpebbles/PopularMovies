@@ -3,7 +3,6 @@ package com.example.abhijeetsinghkgp.popularmovies;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -38,11 +38,12 @@ import java.util.GregorianCalendar;
 public class DetailActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
     private static final String SCHEME = "http";
     private static final String IMAGE_BASE_URL = "image.tmdb.org";
-    private static final String IMAGE_SIZE = "w185";
+    private static final String IMAGE_SIZE = "w342";
     private static final String MOVIE_DATA = "MovieData";
     private static final int TRAILER_LOADER_ID = 678910;
     private static final int REVIEW_LOADER_ID = 96321;
     private MovieData movieData= null;
+    private  ViewPager reviewsPager;
     private YouTubePlayer YPlayer;
 
     private MovieTrailerAdapter movieTrailerAdapter;
@@ -97,15 +98,19 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         TextView moviePlot = (TextView)rootView.findViewById(R.id.movie_plot);
         moviePlot.setText(movieData.getPlot());
         movieTrailerAdapter = new MovieTrailerAdapter(getActivity(), null, 0);
-        movieReviewAdapter = new MovieReviewAdapter(getActivity(), null, 0);
+        //movieReviewAdapter = new MovieReviewAdapter(getActivity(), null, 0);
         RecyclerView trailers = (RecyclerView) rootView.findViewById(R.id.trailer_view);
-        RecyclerView reviews = (RecyclerView) rootView.findViewById(R.id.review_view);
+        //RecyclerView reviews = (RecyclerView) rootView.findViewById(R.id.review_view);
+        reviewsPager = (ViewPager) rootView.findViewById(R.id.review_pager);
+        movieReviewAdapter = new MovieReviewAdapter(getActivity(), null, getChildFragmentManager());
+        reviewsPager.setAdapter(movieReviewAdapter);
+
         mTrailerLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         trailers.setLayoutManager(mTrailerLayoutManager);
         trailers.setAdapter(movieTrailerAdapter);
-        mReviewLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-        reviews.setLayoutManager(mReviewLayoutManager);
-        reviews.setAdapter(movieReviewAdapter);
+        //mReviewLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        //reviews.setLayoutManager(mReviewLayoutManager);
+        //reviews.setAdapter(movieReviewAdapter);
 
         return rootView;
     }
@@ -127,6 +132,9 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         getLoaderManager().initLoader(TRAILER_LOADER_ID, null, this);
         getLoaderManager().initLoader(REVIEW_LOADER_ID, null, this);
+/*        reviewsPager = (ViewPager) getView().findViewById(R.id.review_pager);
+        movieReviewAdapter = new MovieReviewAdapter(getActivity(), null, getActivity().getSupportFragmentManager());
+        reviewsPager.setAdapter(movieReviewAdapter);*/
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -202,7 +210,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
             movieTrailerAdapter.swapCursor(data);
         else if(loader.getId() == REVIEW_LOADER_ID)
             movieReviewAdapter.swapCursor(data);
-        String s = DatabaseUtils.dumpCursorToString(data);
+        //String s = DatabaseUtils.dumpCursorToString(data);
     }
 
     /**

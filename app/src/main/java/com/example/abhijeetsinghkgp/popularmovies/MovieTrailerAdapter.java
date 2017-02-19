@@ -107,29 +107,7 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
         movieTrailerTitle.setText(dataCursor.getString(dataCursor.getColumnIndex(MovieTrailerColumns.TRAILER_NAME)));
         ImageView movieTrailerTile = (ImageView) holder.view.findViewById(R.id.trailer_icon);
         final Uri.Builder builder = new Uri.Builder();
-/*        final YouTubeThumbnailView youTubeThumbnailView = (YouTubeThumbnailView) holder.view.findViewById(R.id.youtube_thumbnail_view);
-        youTubeThumbnailView.initialize(DEVELOPER_KEY, new YouTubeThumbnailView.OnInitializedListener() {
-                    @Override
-                    public void onInitializationSuccess(YouTubeThumbnailView youTubeThumbnailView, final YouTubeThumbnailLoader youTubeThumbnailLoader) {
-                        youTubeThumbnailLoader.setVideo(dataCursor.getString(dataCursor.getColumnIndex(MovieTrailerColumns.TRAILER_URL)));
-                        youTubeThumbnailLoader.setOnThumbnailLoadedListener(new YouTubeThumbnailLoader.OnThumbnailLoadedListener() {
-                            @Override
-                            public void onThumbnailLoaded(YouTubeThumbnailView youTubeThumbnailView, String s) {
-                                youTubeThumbnailLoader.release();
-                            }
 
-                            @Override
-                            public void onThumbnailError(YouTubeThumbnailView youTubeThumbnailView, YouTubeThumbnailLoader.ErrorReason errorReason) {
-
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onInitializationFailure(YouTubeThumbnailView youTubeThumbnailView, YouTubeInitializationResult youTubeInitializationResult) {
-
-                    }
-                });*/
         builder.scheme(SCHEME)
                 .authority(IMAGE_BASE_URL)
                 .appendPath(PATH_VI)

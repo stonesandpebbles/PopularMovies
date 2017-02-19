@@ -6,4 +6,5 @@
     <dimen name="movie_title">24dp</dimen>
     <dimen name="trailer_heading">20dp</dimen>
     <dimen name="trailer_title">16dp</dimen>
+    <dimen name="viewpager_height">300dp</dimen>
 </resources>
