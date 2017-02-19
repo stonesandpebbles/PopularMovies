@@ -108,6 +108,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         mTrailerLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         trailers.setLayoutManager(mTrailerLayoutManager);
         trailers.setAdapter(movieTrailerAdapter);
+
         //mReviewLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         //reviews.setLayoutManager(mReviewLayoutManager);
         //reviews.setAdapter(movieReviewAdapter);
@@ -206,11 +207,31 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
      */
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if(loader.getId() == TRAILER_LOADER_ID)
+        if(loader.getId() == TRAILER_LOADER_ID) {
             movieTrailerAdapter.swapCursor(data);
-        else if(loader.getId() == REVIEW_LOADER_ID)
+            if(data.getCount() == 0)
+                showEmptyViewTrailer();
+        }
+        else if(loader.getId() == REVIEW_LOADER_ID) {
             movieReviewAdapter.swapCursor(data);
+            if(data.getCount() == 0)
+                showEmptyViewReview();
+        }
         //String s = DatabaseUtils.dumpCursorToString(data);
+    }
+
+    private void showEmptyViewReview() {
+        TextView emptyReview = (TextView) getView().findViewById(R.id.review_empty);
+        ViewPager review = (ViewPager) getView().findViewById(R.id.review_pager);
+        emptyReview.setVisibility(View.VISIBLE);
+        review.setVisibility(View.GONE);
+    }
+
+    private void showEmptyViewTrailer() {
+        TextView emptyTrailer = (TextView) getView().findViewById(R.id.trailer_empty);
+        RecyclerView trailers = (RecyclerView) getView().findViewById(R.id.trailer_view);
+        emptyTrailer.setVisibility(View.VISIBLE);
+        trailers.setVisibility(View.GONE);
     }
 
     /**

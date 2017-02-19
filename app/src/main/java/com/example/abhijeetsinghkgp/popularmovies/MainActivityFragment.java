@@ -32,6 +32,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     private static final String MOVIE_DATA_BOOKMARKED = "MovieDataBookMarked";
     private static final int LANDSCAPE_COL = 3;
     private static final int POTRAIT_COL = 2;
+    private static final String DETAILFRAGMENT_TAG = "DFTAG";
     private static final int LOADER_ID = 12345;
     private String queryOption = MovieColumns.POPULAR_SW;
 
@@ -170,7 +171,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             gridView.setNumColumns(POTRAIT_COL);
         }
         //if(!movieDataList.isEmpty()){
-            gridView.setAdapter(moviesAdapter);
+        gridView.setAdapter(moviesAdapter);
 
        // }
 
@@ -198,11 +199,27 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                     if(movieDataIfBookMarked.getId().equalsIgnoreCase(movieData.getId()))
                         movieData.setBookMarkedSw(movieDataIfBookMarked.getBookMarkedSw());
                 }
-                //Create intent
-                Intent intent = new Intent(getActivity(), DetailActivity.class);
-                intent.putExtra(MOVIE_DATA, movieData);
-                //Start detail activity
-                startActivity(intent);
+                MainActivity main = (MainActivity) getActivity();
+                if(main.mTwoPane){
+                    // In two-pane mode, show the detail view in this activity by
+                    // adding or replacing the detail fragment using a
+                    // fragment transaction.
+                    Bundle args = new Bundle();
+                    args.putParcelable(MOVIE_DATA, movieData);
+                    DetailActivityFragment fragment = new DetailActivityFragment();
+                    fragment.setArguments(args);
+
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_detail, fragment, DETAILFRAGMENT_TAG)
+                            .commit();
+                }
+                else {
+                    //Create intent
+                    Intent intent = new Intent(getActivity(), DetailActivity.class);
+                    intent.putExtra(MOVIE_DATA, movieData);
+                    //Start detail activity
+                    startActivity(intent);
+                }
             }
         });
         //new FetchMoviesTask(getView(), getActivity()).execute();

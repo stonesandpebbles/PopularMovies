@@ -117,6 +117,7 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
         movieTrailerTile.setPadding(0, 0, 0, 0);
         Picasso.with(mContext).load(builder.build().toString()).into(movieTrailerTile);
         ImageButton movieTrailerPlayButton = (ImageButton) holder.view.findViewById(R.id.play_button);
+        ImageButton movieTrailerShareButton = (ImageButton) holder.view.findViewById(R.id.share_button);
         movieTrailerPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,7 +130,21 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
                 mContext.startActivity(intent);
             }
         });
-        //movieTrailerTitle.setMaxWidth(movieTrailerTile.getWidth());
+        movieTrailerShareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent shareIntent = new Intent();
+                shareIntent.setAction(Intent.ACTION_SEND);
+                shareIntent.setType("text/plain");
+                final Uri.Builder videoUriBuilder = new Uri.Builder();
+                videoUriBuilder.scheme(SCHEME)
+                        .authority(VIDEO_BASE_URL)
+                        .appendPath(PATH_WATCH)
+                        .appendQueryParameter(QUERY_V, dataCursor.getString(dataCursor.getColumnIndex(MovieTrailerColumns.TRAILER_URL)));
+                shareIntent.putExtra(Intent.EXTRA_TEXT, videoUriBuilder.toString());
+                mContext.startActivity(Intent.createChooser(shareIntent, mContext.getResources().getText(R.string.send_to)));
+            }
+        });
     }
 
     /**

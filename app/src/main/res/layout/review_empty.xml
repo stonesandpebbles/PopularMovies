@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:id="@+id/review_empty"
+    android:text="@string/review_empty"
+    android:textSize="@dimen/trailer_title"
+    android:visibility="gone"
+    android:textStyle="bold"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/activity_horizontal_margin"
+    xmlns:android="http://schemas.android.com/apk/res/android" />

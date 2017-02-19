@@ -19,22 +19,6 @@ public class MovieReviewAdapter extends FragmentPagerAdapter {
     Context mContext;
     LayoutInflater mLayoutInflater;
 
-/*
-   @Override
-    public Object instantiateItem(ViewGroup container, int position) {
-       dataCursor.moveToPosition(position);
-        View view = mLayoutInflater.inflate(R.layout.review_item, container, false);
-        TextView authorView = (TextView) view.findViewById(R.id.author_name);
-       String author = dataCursor.getString(dataCursor.getColumnIndex(MovieReviewColumns.AUTHOR));
-       String content = dataCursor.getString(dataCursor.getColumnIndex(MovieReviewColumns.CONTENT));
-       authorView.setText(author);
-        TextView contentView = (TextView) view.findViewById(R.id.content);
-       contentView.setText(content);
-        container.addView(view);
-        return view;
-    }
-*/
-
 
     /**
      * Return the Fragment associated with a specified position.
@@ -81,6 +65,9 @@ public class MovieReviewAdapter extends FragmentPagerAdapter {
         this.dataCursor = cursor;
         if (cursor != null) {
             this.notifyDataSetChanged();
+        }
+        if(cursor == null){
+            //mContext.getActivity().setContentView(R.layout.review_empty);
         }
         return oldCursor;
     }

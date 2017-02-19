@@ -2,7 +2,8 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
-    android:fillViewport="true">
+    android:fillViewport="true"
+    android:id="@+id/parent_scroll_view">
     <LinearLayout
         xmlns:tools="http://schemas.android.com/tools"
         android:orientation="vertical"
@@ -83,7 +84,7 @@
             android:paddingRight="@dimen/activity_horizontal_margin">
 
         </android.support.v7.widget.RecyclerView>
-
+        <include layout="@layout/trailer_empty" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -102,5 +103,6 @@
             android:layout_height="@dimen/viewpager_height"
             android:paddingRight="@dimen/activity_vertical_margin"
             android:paddingBottom="@dimen/activity_horizontal_margin"/>
+        <include layout="@layout/review_empty" />
     </LinearLayout>
 </ScrollView>
