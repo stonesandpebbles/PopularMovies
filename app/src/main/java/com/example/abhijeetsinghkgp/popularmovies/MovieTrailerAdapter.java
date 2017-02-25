@@ -2,6 +2,7 @@ package com.example.abhijeetsinghkgp.popularmovies;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.abhijeetsinghkgp.popularmovies.data.MovieTrailerColumns;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -31,6 +33,7 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
     private static final String QUERY_V = "v";
     Cursor dataCursor;
     Context mContext;
+    boolean isNetworkAvaialable = false;
     /**
      * Recommended constructor.
      *
@@ -43,6 +46,7 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
     public MovieTrailerAdapter(Context context, Cursor c, int flags) {
         this.dataCursor = c;
         this.mContext = context;
+        isNetworkAvaialable = MainActivityFragment.isNetworkAvailable(context);
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -102,10 +106,14 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
      */
     @Override
     public void onBindViewHolder(MovieTrailerAdapter.ViewHolder holder, int position) {
+        final int dataCursorPosition = position;
         dataCursor.moveToPosition(position);
         TextView movieTrailerTitle = (TextView) holder.view.findViewById(R.id.video_title);
         movieTrailerTitle.setText(dataCursor.getString(dataCursor.getColumnIndex(MovieTrailerColumns.TRAILER_NAME)));
-        ImageView movieTrailerTile = (ImageView) holder.view.findViewById(R.id.trailer_icon);
+        final ImageView movieTrailerTile = (ImageView) holder.view.findViewById(R.id.trailer_icon);
+
+        //ViewGroup.MarginLayoutParams params = new ViewGroup.MarginLayoutParams(movieTrailerTileWidth, movieTrailerTileHeight);
+        //movieTrailerTile.setLayoutParams(params);
         final Uri.Builder builder = new Uri.Builder();
 
         builder.scheme(SCHEME)
@@ -115,13 +123,38 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
                 .appendPath(PATH_JPEG);
         movieTrailerTile.setAdjustViewBounds(true);
         movieTrailerTile.setPadding(0, 0, 0, 0);
-        Picasso.with(mContext).load(builder.build().toString()).into(movieTrailerTile);
+        Picasso.with(mContext).load(builder.build().toString()).into(movieTrailerTile, new Callback() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onError() {
+                int orientation = mContext.getResources().getConfiguration().orientation;
+                int movieTrailerTileHeight = 0;
+                int movieTrailerTileWidth = 0;
+                int width = mContext.getResources().getDisplayMetrics().widthPixels;
+                int height = mContext.getResources().getDisplayMetrics().heightPixels;
+                if(orientation == Configuration.ORIENTATION_LANDSCAPE){
+                    movieTrailerTileHeight = 3*height / 5;
+                    movieTrailerTileWidth = 2*width/5;
+                }
+                else{
+                    movieTrailerTileWidth = 3*width/4;
+                    movieTrailerTileHeight = 2*height/5;
+                }
+                Picasso.with(mContext).load(R.drawable.ic_broken_image_black_24dp).
+                        resize(movieTrailerTileWidth, movieTrailerTileHeight).centerCrop().into(movieTrailerTile);
+            }
+        });
         ImageButton movieTrailerPlayButton = (ImageButton) holder.view.findViewById(R.id.play_button);
         ImageButton movieTrailerShareButton = (ImageButton) holder.view.findViewById(R.id.share_button);
         movieTrailerPlayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final Uri.Builder videoUriBuilder = new Uri.Builder();
+                dataCursor.moveToPosition(dataCursorPosition);
                 videoUriBuilder.scheme(SCHEME)
                         .authority(VIDEO_BASE_URL)
                         .appendPath(PATH_WATCH)
@@ -137,6 +170,7 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
                 shareIntent.setAction(Intent.ACTION_SEND);
                 shareIntent.setType("text/plain");
                 final Uri.Builder videoUriBuilder = new Uri.Builder();
+                dataCursor.moveToPosition(dataCursorPosition);
                 videoUriBuilder.scheme(SCHEME)
                         .authority(VIDEO_BASE_URL)
                         .appendPath(PATH_WATCH)

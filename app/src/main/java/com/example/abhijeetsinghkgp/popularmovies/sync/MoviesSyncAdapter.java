@@ -12,7 +12,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SyncRequest;
 import android.content.SyncResult;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -49,10 +48,9 @@ import java.util.List;
  */
 public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
-    // Interval at which to sync with the weather, in seconds.
-    // 60 seconds (1 minute) * 180 = 3 hours
-    public static final int SYNC_INTERVAL = 60*60*24;
-    public static final int SYNC_FLEXTIME = SYNC_INTERVAL/3;
+    // Interval at which to sync with the movie list, in seconds.
+    public static final int SYNC_INTERVAL_DAY = 60*60*24;
+    public static final int SYNC_FLEXTIME = SYNC_INTERVAL_DAY /3;
 
     private static final long DAY_IN_MILLIS = 1000 * 24;
     private static final int MOVIE_NOTIFICATION_ID = 3004;
@@ -89,55 +87,61 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
         boolean displayNotifications = prefs.getBoolean("notifications_new_message",
                 true);
 
-        if ( displayNotifications ) {
+        if (displayNotifications) {
             String lastNotificationKey = context.getString(R.string.pref_last_notification);
             long lastSync = prefs.getLong(lastNotificationKey, 0);
 
             if (System.currentTimeMillis() - lastSync >= DAY_IN_MILLIS) {
                 // Last sync was more than 1 day ago, let's send a notification with the movies.
 
-                    int iconId = R.mipmap.movie_launcher;
-                    String title = context.getString(R.string.app_name);
+                int iconId = R.mipmap.movie_launcher;
+                String title = context.getString(R.string.app_name);
 
-                    // Define the text of the forecast.
-                    String contentText = context.getString(R.string.notification_message);
+                // Define the text of the forecast.
+                String contentText = context.getString(R.string.notification_message);
 
-                    //build your notification here.
-                    NotificationCompat.Builder mBuilder =
-                            new NotificationCompat.Builder(getContext())
-                                    .setSmallIcon(iconId).setTicker(contentText)
-                                    .setContentTitle(title)
-                                    .setContentText(contentText);
-                    mBuilder.setAutoCancel(true);
-                    Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                    mBuilder.setSound(alarmSound);
-                    mBuilder.setVibrate(new long[] { 1000, 1000});
-                    // Make something interesting happen when the user clicks on the notification.
-                    // In this case, opening the app is sufficient
-                    Intent resultIntent = new Intent(context, MainActivity.class);
+                //build your notification here.
+                NotificationCompat.Builder mBuilder =
+                        new NotificationCompat.Builder(getContext())
+                                .setSmallIcon(iconId).setTicker(contentText)
+                                .setContentTitle(title)
+                                .setContentText(contentText);
+                mBuilder.setAutoCancel(true);
 
-                    // The stack builder object will contain an artificial back stack for the
-                    // started Activity.
-                    // This ensures that navigating backward from the Activity leads out of
-                    // your application to the Home screen.
-                    TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
-                    stackBuilder.addNextIntent(resultIntent);
-                    PendingIntent resultPendingIntent =
-                            stackBuilder.getPendingIntent(
-                                    0,
-                                    PendingIntent.FLAG_UPDATE_CURRENT
-                            );
-                    mBuilder.setContentIntent(resultPendingIntent);
-
-                    NotificationManager mNotificationManager =
-                            (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
-                    // MOVIE_NOTIFICATION_ID allows you to update the notification later on.
-                    mNotificationManager.notify(MOVIE_NOTIFICATION_ID, mBuilder.build());
-                    //refreshing last sync
-                    SharedPreferences.Editor editor = prefs.edit();
-                    editor.putLong(lastNotificationKey, System.currentTimeMillis());
-                    editor.commit();
+                String userRingtone = prefs.getString("notifications_new_message_ringtone", "SHOULD NOT HAPPEN");
+                Uri notificationSound = Uri.parse(userRingtone);
+                mBuilder.setSound(notificationSound);
+                boolean shouldVibrate = prefs.getBoolean("notifications_new_message_vibrate", true);
+                if(shouldVibrate) {
+                    mBuilder.setDefaults(NotificationCompat.DEFAULT_VIBRATE);
+                    //mBuilder.setVibrate(new long[] { 1000, 1000});
                 }
+                // Make something interesting happen when the user clicks on the notification.
+                // In this case, opening the app is sufficient
+                Intent resultIntent = new Intent(context, MainActivity.class);
+
+                // The stack builder object will contain an artificial back stack for the
+                // started Activity.
+                // This ensures that navigating backward from the Activity leads out of
+                // your application to the Home screen.
+                TaskStackBuilder stackBuilder = TaskStackBuilder.create(context);
+                stackBuilder.addNextIntent(resultIntent);
+                PendingIntent resultPendingIntent =
+                        stackBuilder.getPendingIntent(
+                                0,
+                                PendingIntent.FLAG_UPDATE_CURRENT
+                        );
+                mBuilder.setContentIntent(resultPendingIntent);
+
+                NotificationManager mNotificationManager =
+                        (NotificationManager) getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+                // MOVIE_NOTIFICATION_ID allows you to update the notification later on.
+                mNotificationManager.notify(MOVIE_NOTIFICATION_ID, mBuilder.build());
+                //refreshing last sync
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putLong(lastNotificationKey, System.currentTimeMillis());
+                editor.commit();
+                 }
             }
         }
 
@@ -338,7 +342,9 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
         /*
          * Since we've created an account
          */
-        MoviesSyncAdapter.configurePeriodicSync(context, SYNC_INTERVAL, SYNC_FLEXTIME);
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+        int syncFreqInDays = new Integer(prefs.getString("sync_frequency", "1"));
+        MoviesSyncAdapter.configurePeriodicSync(context, SYNC_INTERVAL_DAY * syncFreqInDays, SYNC_FLEXTIME * syncFreqInDays);
 
         /*
          * Without calling setSyncAutomatically, our periodic sync will not be enabled.

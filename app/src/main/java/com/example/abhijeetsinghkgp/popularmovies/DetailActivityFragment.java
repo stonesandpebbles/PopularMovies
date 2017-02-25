@@ -1,6 +1,5 @@
 package com.example.abhijeetsinghkgp.popularmovies;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -16,13 +15,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CursorAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.abhijeetsinghkgp.popularmovies.data.MovieProviderGenerator;
 import com.google.android.youtube.player.YouTubePlayer;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.text.DateFormat;
@@ -44,13 +43,15 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     private static final int REVIEW_LOADER_ID = 96321;
     private MovieData movieData= null;
     private  ViewPager reviewsPager;
+    private String REVIEW_INDEX = "REVIEW_INDEX";
+    private int mReviewIndex = 0;
     private YouTubePlayer YPlayer;
 
     private MovieTrailerAdapter movieTrailerAdapter;
     private MovieReviewAdapter movieReviewAdapter;
     private RecyclerView.LayoutManager mTrailerLayoutManager;
     private RecyclerView.LayoutManager mReviewLayoutManager;
-
+    private boolean mIsRestoredFromBackground = true;
 
     public DetailActivityFragment() {
     }
@@ -64,7 +65,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         movieData = movieDetail.getParcelableExtra(MOVIE_DATA);
         TextView movieTitle = (TextView)rootView.findViewById(R.id.movie_title);
         movieTitle.setText(movieData.getTitle());
-        ImageView movieIcon = (ImageView)rootView.findViewById(R.id.movie_icon);
+        final ImageView movieIcon = (ImageView)rootView.findViewById(R.id.movie_icon);
         ImageButton starIcon = (ImageButton)rootView.findViewById(R.id.star_icon);
         int starBackgroundColor = movieData.getBookMarkedSw().equalsIgnoreCase(FetchMoviesTask.YES)? R.color.yellow : R.color.grey;
         starIcon.setBackgroundColor(getResources().getColor(starBackgroundColor));
@@ -77,7 +78,17 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
                 .appendPath(IMAGE_SIZE)
                 .appendEncodedPath(movieData.getPosterImageUrl());
 
-        Picasso.with(getActivity()).load(builder.build().toString()).into(movieIcon);
+        Picasso.with(getActivity()).load(builder.build().toString()).into(movieIcon, new Callback() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onError() {
+                Picasso.with(getActivity()).load(R.drawable.ic_broken_image_black_24dp).resize(300, 300).centerInside().into(movieIcon);
+            }
+        });
         //TextView movieTime = (TextView)rootView.findViewById(R.id.movie_time);
         //movieTime.setText(movieData.get);
 
@@ -94,7 +105,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         Integer year = date.get(Calendar.YEAR);
         movieReleaseYear.setText(year.toString());
         TextView movieRating = (TextView)rootView.findViewById(R.id.movie_rating);
-        movieRating.setText(movieData.getRating() + "/10");
+        movieRating.setText(movieData.getRating() + getString(R.string.max_rating));
         TextView moviePlot = (TextView)rootView.findViewById(R.id.movie_plot);
         moviePlot.setText(movieData.getPlot());
         movieTrailerAdapter = new MovieTrailerAdapter(getActivity(), null, 0);
@@ -104,7 +115,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         reviewsPager = (ViewPager) rootView.findViewById(R.id.review_pager);
         movieReviewAdapter = new MovieReviewAdapter(getActivity(), null, getChildFragmentManager());
         reviewsPager.setAdapter(movieReviewAdapter);
-
+        mIsRestoredFromBackground = false;
         mTrailerLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         trailers.setLayoutManager(mTrailerLayoutManager);
         trailers.setAdapter(movieTrailerAdapter);
@@ -116,19 +127,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         return rootView;
     }
 
-    /**
-     * Called when the fragment's activity has been created and this
-     * fragment's view hierarchy instantiated.  It can be used to do final
-     * initialization once these pieces are in place, such as retrieving
-     * views or restoring state.  It is also useful for fragments that use
-     * {@link #setRetainInstance(boolean)} to retain their instance,
-     * as this callback tells the fragment when it is fully associated with
-     * the new activity instance.  This is called after {@link #onCreateView}
-     * and before {@link #onViewStateRestored(Bundle)}.
-     *
-     * @param savedInstanceState If the fragment is being re-created from
-     *                           a previous saved state, this is the state.
-     */
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         getLoaderManager().initLoader(TRAILER_LOADER_ID, null, this);
@@ -139,13 +138,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         super.onActivityCreated(savedInstanceState);
     }
 
-    /**
-     * Instantiate and return a new Loader for the given ID.
-     *
-     * @param id   The ID whose loader is to be created.
-     * @param args Any arguments supplied by the caller.
-     * @return Return a new Loader instance that is ready to start loading.
-     */
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         CursorLoader loader = null;
@@ -166,45 +159,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         return loader;
     }
 
-    /**
-     * Called when a previously created loader has finished its load.  Note
-     * that normally an application is <em>not</em> allowed to commit fragment
-     * transactions while in this call, since it can happen after an
-     * activity's state is saved.  See {
-     * FragmentManager.openTransaction()} for further discussion on this.
-     * <p>
-     * <p>This function is guaranteed to be called prior to the release of
-     * the last data that was supplied for this Loader.  At this point
-     * you should remove all use of the old data (since it will be released
-     * soon), but should not do your own release of the data since its Loader
-     * owns it and will take care of that.  The Loader will take care of
-     * management of its data so you don't have to.  In particular:
-     * <p>
-     * <ul>
-     * <li> <p>The Loader will monitor for changes to the data, and report
-     * them to you through new calls here.  You should not monitor the
-     * data yourself.  For example, if the data is a {@link Cursor}
-     * and you place it in a {@link CursorAdapter}, use
-     * the {@link CursorAdapter#CursorAdapter(Context,
-     * Cursor, int)} constructor <em>without</em> passing
-     * in either {@link CursorAdapter#FLAG_AUTO_REQUERY}
-     * or {@link CursorAdapter#FLAG_REGISTER_CONTENT_OBSERVER}
-     * (that is, use 0 for the flags argument).  This prevents the CursorAdapter
-     * from doing its own observing of the Cursor, which is not needed since
-     * when a change happens you will get a new Cursor throw another call
-     * here.
-     * <li> The Loader will release the data once it knows the application
-     * is no longer using it.  For example, if the data is
-     * a {@link Cursor} from a {@link CursorLoader},
-     * you should not call close() on it yourself.  If the Cursor is being placed in a
-     * {@link CursorAdapter}, you should use the
-     * {@link CursorAdapter#swapCursor(Cursor)}
-     * method so that the old Cursor is not closed.
-     * </ul>
-     *
-     * @param loader The Loader that has finished.
-     * @param data   The data generated by the Loader.
-     */
+
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if(loader.getId() == TRAILER_LOADER_ID) {
@@ -234,13 +189,43 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         trailers.setVisibility(View.GONE);
     }
 
-    /**
-     * Called when a previously created loader is being reset, and thus
-     * making its data unavailable.  The application should at this point
-     * remove any references it has to the Loader's data.
-     *
-     * @param loader The Loader that is being reset.
-     */
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt(REVIEW_INDEX, reviewsPager.getCurrentItem());
+    }
+
+    @Override
+    public void onViewStateRestored(@Nullable Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+        if(savedInstanceState != null) {
+            mReviewIndex = savedInstanceState.getInt(REVIEW_INDEX);
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mIsRestoredFromBackground = true;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(!mIsRestoredFromBackground)
+            reviewsPager.setCurrentItem(mReviewIndex);
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+    }
+
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
         if(loader.getId() == TRAILER_LOADER_ID)

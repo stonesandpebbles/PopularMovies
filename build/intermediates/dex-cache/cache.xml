@@ -12,21 +12,21 @@
     </item>
     <item
         is-multidex="true"
-        jar="D:\github\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\support-fragment\25.1.1\jars\classes.jar"
-        jumboMode="true"
-        optimize="true"
-        revision="23.0.2"
-        sha1="e2719c102dca3a7a5b02ce07f769362da6ddb4ab">
-        <dex dex="D:\github\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-fragment-25.1.1_73603e56ef2f668c4a119c6ec91ba86c6e202d6b\classes.dex" />
-    </item>
-    <item
-        is-multidex="true"
         jar="D:\github\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\appcompat-v7\25.1.1\jars\classes.jar"
         jumboMode="true"
         optimize="true"
         revision="23.0.2"
         sha1="ecb496cc08dd52551fc5ec6db3bc0632e95a89bb">
         <dex dex="D:\github\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-appcompat-v7-25.1.1_b4a8878b2724e6d8773a8926f862b5e797f4f3e6\classes.dex" />
+    </item>
+    <item
+        is-multidex="true"
+        jar="D:\github\PopularMovies\app\build\intermediates\exploded-aar\com.android.support\support-fragment\25.1.1\jars\classes.jar"
+        jumboMode="true"
+        optimize="true"
+        revision="23.0.2"
+        sha1="e2719c102dca3a7a5b02ce07f769362da6ddb4ab">
+        <dex dex="D:\github\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\com.android.support-support-fragment-25.1.1_73603e56ef2f668c4a119c6ec91ba86c6e202d6b\classes.dex" />
     </item>
     <item
         is-multidex="true"
@@ -43,7 +43,7 @@
         jumboMode="true"
         optimize="true"
         revision="23.0.2"
-        sha1="d12a365a948fca8fdd99ac21b01983eac99f1819">
+        sha1="3db291a78d2afcd7d1faa332cee1cea9853a71f9">
         <dex dex="D:\github\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_9cabcdd5d34ba6961866446588e54c80ad49418c\classes.dex" />
     </item>
     <item
@@ -106,7 +106,7 @@
         jumboMode="true"
         optimize="true"
         revision="23.0.2"
-        sha1="3d1b4185ab9f768836298d1ba8ff480804f70573">
+        sha1="4234fcbb83430b44107d22c0481f35ab780f99e8">
         <dex dex="D:\github\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_3faf2b2d3fd9220c600f4f4baf488a7a2f7140a8\classes.dex" />
     </item>
     <item

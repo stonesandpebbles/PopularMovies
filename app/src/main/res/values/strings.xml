@@ -44,19 +44,15 @@
 
     <string name="pref_title_sync_frequency">Sync frequency</string>
     <string-array name="pref_sync_frequency_titles">
-        <item>15 minutes</item>
-        <item>30 minutes</item>
-        <item>1 hour</item>
-        <item>3 hours</item>
-        <item>6 hours</item>
+        <item>1 day</item>
+        <item>3 days</item>
+        <item>1 week</item>
         <item>Never</item>
     </string-array>
     <string-array name="pref_sync_frequency_values">
-        <item>15</item>
-        <item>30</item>
-        <item>60</item>
-        <item>180</item>
-        <item>360</item>
+        <item>1</item>
+        <item>3</item>
+        <item>7</item>
         <item>-1</item>
     </string-array>
 
@@ -80,6 +76,10 @@
     <string name="send_to">Share video via</string>
     <string name="trailer_empty">There are no trailers currently.</string>
     <string name="review_empty">There are no reviews currently.</string>
+    <string name="empty_gridview">No Movie Data Available.</string>
+    <string name="geridview_empty_no_network">No movie information available. The network is not available to fetch movie data.</string>
+    <string name="fetching_data">Fetching data. Please wait...</string>
+    <string name="max_rating" translatable="false">/10</string>
 
 
 </resources>
