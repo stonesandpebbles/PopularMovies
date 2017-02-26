@@ -43,7 +43,7 @@
         jumboMode="true"
         optimize="true"
         revision="23.0.2"
-        sha1="3db291a78d2afcd7d1faa332cee1cea9853a71f9">
+        sha1="228873423625a463b10141bc1a3d7c61de7e5d94">
         <dex dex="D:\github\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run_9cabcdd5d34ba6961866446588e54c80ad49418c\classes.dex" />
     </item>
     <item
@@ -106,7 +106,7 @@
         jumboMode="true"
         optimize="true"
         revision="23.0.2"
-        sha1="4234fcbb83430b44107d22c0481f35ab780f99e8">
+        sha1="fb2d66229a0f52a76c7990c81e92b6e4dde7771e">
         <dex dex="D:\github\PopularMovies\app\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_3faf2b2d3fd9220c600f4f4baf488a7a2f7140a8\classes.dex" />
     </item>
     <item

@@ -6,8 +6,8 @@
     android:visibility="gone"
     android:textSize="@dimen/trailer_title"
     android:textStyle="bold"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingBottom="@dimen/activity_horizontal_margin"
+    android:paddingLeft="@dimen/padding"
+    android:paddingBottom="@dimen/padding"
     android:text="@string/trailer_empty">
 
 </TextView>

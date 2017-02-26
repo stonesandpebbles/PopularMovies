@@ -18,8 +18,8 @@
             android:gravity="center"
             android:textSize="@dimen/movie_title"
             android:textStyle="bold"
-            android:paddingTop="@dimen/activity_horizontal_margin"
-            android:paddingBottom="@dimen/activity_horizontal_margin" />
+            android:paddingTop="@dimen/padding"
+            android:paddingBottom="@dimen/padding" />
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
@@ -29,8 +29,8 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:id="@+id/movie_icon"
-                android:paddingLeft="@dimen/activity_horizontal_margin"
-                android:paddingRight="@dimen/activity_horizontal_margin"/>
+                android:paddingLeft="@dimen/padding"
+                android:paddingRight="@dimen/padding"/>
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -53,8 +53,8 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/star_icon"
                     android:src ="@android:drawable/btn_star"
-                    android:background="#00ffffff"
-                    android:onClick="handleChange"/>
+                    android:visibility="gone"
+                    android:background="#00ffffff" />
 
             </LinearLayout>
 
@@ -63,18 +63,19 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/movie_plot"
-            android:textSize="@dimen/activity_horizontal_margin"
-            android:padding="@dimen/activity_horizontal_margin"/>
+            android:textSize="@dimen/padding"
+            android:padding="@dimen/padding"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/trailer_title"
             android:text="@string/trailers"
+            android:visibility="gone"
             android:textSize="@dimen/trailer_heading"
             android:textStyle="bold"
-            android:paddingBottom="@dimen/activity_horizontal_margin"
-            android:paddingLeft="@dimen/activity_horizontal_margin"/>
+            android:paddingBottom="@dimen/padding"
+            android:paddingLeft="@dimen/padding"/>
 
         <android.support.v7.widget.RecyclerView
             android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment"
@@ -83,7 +84,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:paddingRight="@dimen/activity_horizontal_margin">
+            android:paddingRight="@dimen/padding">
 
         </android.support.v7.widget.RecyclerView>
         <include layout="@layout/trailer_empty" />
@@ -92,11 +93,12 @@
             android:layout_height="wrap_content"
             android:id="@+id/review_title"
             android:text="@string/reviews"
+            android:visibility="gone"
             android:textSize="@dimen/trailer_heading"
             android:textStyle="bold"
-            android:paddingTop="@dimen/activity_horizontal_margin"
-            android:paddingBottom="@dimen/activity_horizontal_margin"
-            android:paddingLeft="@dimen/activity_horizontal_margin"/>
+            android:paddingTop="@dimen/padding"
+            android:paddingBottom="@dimen/padding"
+            android:paddingLeft="@dimen/padding"/>
 
         <android.support.v4.view.ViewPager
             xmlns:android="http://schemas.android.com/apk/res/android"
@@ -104,7 +106,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/viewpager_height"
             android:paddingRight="@dimen/activity_vertical_margin"
-            android:paddingBottom="@dimen/activity_horizontal_margin"/>
+            android:paddingBottom="@dimen/padding"/>
         <include layout="@layout/review_empty" />
     </LinearLayout>
 </ScrollView>

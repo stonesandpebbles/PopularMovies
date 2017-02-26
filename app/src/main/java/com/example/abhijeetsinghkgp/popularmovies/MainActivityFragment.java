@@ -33,20 +33,22 @@ import com.example.abhijeetsinghkgp.popularmovies.data.MovieProviderGenerator;
 public class MainActivityFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
     private MovieAdapter moviesAdapter;
     private static final String MOVIE_DATA = "MovieData";
-    private static final String MOVIE_DATA_BOOKMARKED = "MovieDataBookMarked";
+    public static final String MOVIE_DATA_BOOKMARKED = "MovieDataBookMarked";
     private static final int LANDSCAPE_COL = 3;
     private static final int POTRAIT_COL = 2;
     private static final String DETAILFRAGMENT_TAG = "DFTAG";
     private static final int LOADER_ID = 12345;
     private String queryOption = MovieColumns.POPULAR_SW;
     private BroadcastReceiver networkChangeReceiver;
-
+    private boolean mTwoPane = false;
+    public static final String TWO_PANE="twoPane";
 
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         getLoaderManager().initLoader(LOADER_ID, null, this);
         super.onActivityCreated(savedInstanceState);
+        this.mTwoPane = ((MainActivity) getActivity()).mTwoPane;
     }
 
     public MainActivityFragment() {
@@ -67,33 +69,35 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         if (id == R.id.action_sort_rating) {
             queryOption = MovieColumns.TOP_RATED_SW;
             getLoaderManager().restartLoader(LOADER_ID, null, this);
+            replaceFragmentWithEmpty();
             return true;
         }
         if(id == R.id.action_sort_popular){
             queryOption = MovieColumns.POPULAR_SW;
             getLoaderManager().restartLoader(LOADER_ID, null, this);
+            replaceFragmentWithEmpty();
             return true;
         }
 
         if(id == R.id.action_sort_favourite){
             queryOption = MovieColumns.BOOKMARKED_SW;
             getLoaderManager().restartLoader(LOADER_ID, null, this);
+            replaceFragmentWithEmpty();
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
+    private void replaceFragmentWithEmpty(){
+        if(mTwoPane) {
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_detail, new DetailActivityFragment(), DETAILFRAGMENT_TAG)
+                    .commit();
+        }
+    }
     @Override
     public void onSaveInstanceState(Bundle outState) {
-//        GridView gridView = (GridView)getView();
-//        ArrayList<MovieData> movieAdapterData = new ArrayList<>();
-//        MovieAdapter movieAdapter = (MovieAdapter)gridView.getAdapter();
-//        int numMovies = movieAdapter.getCount();
-//        for(int i = 0; i < numMovies; i++){
-//            //movieAdapterData.add(movieAdapter.getItem(i).);
-//        }
-//        outState.putParcelableArrayList("Movies", movieAdapterData);
         super.onSaveInstanceState(outState);
     }
 
@@ -102,12 +106,6 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        if(savedInstanceState == null || !savedInstanceState.containsKey("Movies")) {
-//            movieDataList  = new ArrayList<>();
-//        }
-//        else {
-//            movieDataList = savedInstanceState.getParcelableArrayList("Movies");
-//        }
         setHasOptionsMenu(true);
         networkChangeReceiver = new NetworkStateReceiver();
     }
@@ -119,12 +117,11 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView =  inflater.inflate(R.layout.fragment_main, container, false);
         GridView gridView = (GridView) rootView.findViewById(R.id.movies_grid);
-        final MainActivity main = (MainActivity) getActivity();
-        moviesAdapter = new MovieAdapter(getActivity(), null, 0, main.mTwoPane);
+        moviesAdapter = new MovieAdapter(getActivity(), null, 0, mTwoPane);
 
         if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
             gridView.setNumColumns(LANDSCAPE_COL);
@@ -153,18 +150,14 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                     movieData.setTopRatedSw(cursor.getString(cursor.getColumnIndex(MovieColumns.TOP_RATED_SW)));
 
                 }
-                if(getActivity().getIntent().hasExtra(MOVIE_DATA_BOOKMARKED)){
-                    MovieData movieDataIfBookMarked = getActivity().getIntent().getParcelableExtra(MOVIE_DATA_BOOKMARKED);
-                    if(movieDataIfBookMarked.getId().equalsIgnoreCase(movieData.getId()))
-                        movieData.setBookMarkedSw(movieDataIfBookMarked.getBookMarkedSw());
-                }
 
-                if(main.mTwoPane){
+                if(mTwoPane){
                     // In two-pane mode, show the detail view in this activity by
                     // adding or replacing the detail fragment using a
                     // fragment transaction.
                     Bundle args = new Bundle();
                     args.putParcelable(MOVIE_DATA, movieData);
+                    args.putBoolean(TWO_PANE, mTwoPane);
                     DetailActivityFragment fragment = new DetailActivityFragment();
                     fragment.setArguments(args);
 
@@ -176,6 +169,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                     //Create intent
                     Intent intent = new Intent(getActivity(), DetailActivity.class);
                     intent.putExtra(MOVIE_DATA, movieData);
+                    intent.putExtra(TWO_PANE, mTwoPane);
                     //Start detail activity
                     startActivity(intent);
                 }

@@ -6,6 +6,6 @@
     android:textSize="@dimen/trailer_title"
     android:visibility="gone"
     android:textStyle="bold"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingBottom="@dimen/activity_horizontal_margin"
+    android:paddingLeft="@dimen/padding"
+    android:paddingBottom="@dimen/padding"
     xmlns:android="http://schemas.android.com/apk/res/android" />

@@ -124,7 +124,20 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //LinearLayout root = (LinearLayout) findViewById(android.R.id.list).getParent().getParent().getParent();
+        //setContentView(R.layout.settings);
+        //LinearLayout toolbarLayout = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.settings, root, false);
+        //Toolbar toolbar = (Toolbar)toolbarLayout.findViewById(R.id.toolbar);
+        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        //if(toolbar.getParent()!=null)
+          //((ViewGroup)toolbar.getParent()).removeView(toolbar);
+        //root.addView(toolbar, 0);
+        //setContentView(R.layout.settings);
+        //setTheme(R.style.AppTheme);
+        //setSupportActionBar(toolbar);
+        //setupActionBar();
     }
+
 
 
     /**
@@ -168,7 +181,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         loadHeadersFromResource(R.xml.pref_headers, target);
         setContentView(R.layout.settings);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //setTheme(R.style.AppTheme);
         setSupportActionBar(toolbar);
         setupActionBar();
     }
@@ -254,6 +266,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View layout = inflater.inflate(R.layout.settings, container, false);
+            //getActivity().setContentView(R.layout.settings);
             if (layout != null) {
                 AppCompatPreferenceActivity activity = (AppCompatPreferenceActivity) getActivity();
                 Toolbar toolbar = (Toolbar) layout.findViewById(R.id.toolbar);
@@ -297,6 +310,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View layout = inflater.inflate(R.layout.settings, container, false);
+            //getActivity().setContentView(R.layout.settings);
             if (layout != null) {
                 AppCompatPreferenceActivity activity = (AppCompatPreferenceActivity) getActivity();
                 Toolbar toolbar = (Toolbar) layout.findViewById(R.id.toolbar);

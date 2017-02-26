@@ -94,16 +94,18 @@ public class MovieAdapter extends CursorAdapter {
             }
         }
         else{
-            movieTileWidth = width/2;
-            if(mTwoPane)
-                movieTileHeight = height/3;
-            else
-                movieTileHeight = height/2;
+            if(mTwoPane) {
+                movieTileWidth = width / 4;
+                movieTileHeight = height / 3;
+            }
+            else {
+                movieTileWidth = width / 2;
+                movieTileHeight = height / 2;
+            }
         }
         final int finalMovieTileHeight = movieTileHeight;
         final int finalMovieTileWidth = movieTileWidth;
-        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(movieTileWidth, movieTileHeight);
-        movieTile.setLayoutParams(params);
+
         Picasso.with(mContext).load(builder.build().toString()).resize(movieTileWidth, movieTileHeight).into(movieTile, new Callback() {
             @Override
             public void onSuccess() {
@@ -112,6 +114,8 @@ public class MovieAdapter extends CursorAdapter {
 
             @Override
             public void onError() {
+                ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(finalMovieTileWidth, finalMovieTileHeight);
+                movieTile.setLayoutParams(params);
                 Picasso.with(mContext).load(R.drawable.ic_broken_image_black_24dp).
                         into(movieTile);
             }

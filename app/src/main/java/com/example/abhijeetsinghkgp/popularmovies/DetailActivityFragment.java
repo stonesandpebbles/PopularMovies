@@ -1,5 +1,6 @@
 package com.example.abhijeetsinghkgp.popularmovies;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -19,8 +20,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.example.abhijeetsinghkgp.popularmovies.data.MovieColumns;
 import com.example.abhijeetsinghkgp.popularmovies.data.MovieProviderGenerator;
-import com.google.android.youtube.player.YouTubePlayer;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -30,6 +31,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+
+import static android.view.View.VISIBLE;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -45,13 +48,13 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     private  ViewPager reviewsPager;
     private String REVIEW_INDEX = "REVIEW_INDEX";
     private int mReviewIndex = 0;
-    private YouTubePlayer YPlayer;
 
     private MovieTrailerAdapter movieTrailerAdapter;
     private MovieReviewAdapter movieReviewAdapter;
     private RecyclerView.LayoutManager mTrailerLayoutManager;
     private RecyclerView.LayoutManager mReviewLayoutManager;
     private boolean mIsRestoredFromBackground = true;
+    private boolean mTwoPane = false;
 
     public DetailActivityFragment() {
     }
@@ -62,79 +65,120 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
 
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         Intent movieDetail = getActivity().getIntent();
-        movieData = movieDetail.getParcelableExtra(MOVIE_DATA);
-        TextView movieTitle = (TextView)rootView.findViewById(R.id.movie_title);
-        movieTitle.setText(movieData.getTitle());
-        final ImageView movieIcon = (ImageView)rootView.findViewById(R.id.movie_icon);
-        ImageButton starIcon = (ImageButton)rootView.findViewById(R.id.star_icon);
-        int starBackgroundColor = movieData.getBookMarkedSw().equalsIgnoreCase(FetchMoviesTask.YES)? R.color.yellow : R.color.grey;
-        starIcon.setBackgroundColor(getResources().getColor(starBackgroundColor));
-
-        Uri.Builder builder = new Uri.Builder();
-        builder.scheme(SCHEME)
-                .authority(IMAGE_BASE_URL)
-                .appendPath("t")
-                .appendPath("p")
-                .appendPath(IMAGE_SIZE)
-                .appendEncodedPath(movieData.getPosterImageUrl());
-
-        Picasso.with(getActivity()).load(builder.build().toString()).into(movieIcon, new Callback() {
-            @Override
-            public void onSuccess() {
-
-            }
-
-            @Override
-            public void onError() {
-                Picasso.with(getActivity()).load(R.drawable.ic_broken_image_black_24dp).resize(300, 300).centerInside().into(movieIcon);
-            }
-        });
-        //TextView movieTime = (TextView)rootView.findViewById(R.id.movie_time);
-        //movieTime.setText(movieData.get);
-
-        TextView movieReleaseYear = (TextView)rootView.findViewById(R.id.movie_release_year);
-        DateFormat releaseDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        Date releaseDate = null;
-        try {
-            releaseDate = releaseDateFormat.parse(movieData.getReleaseDate());
-        } catch (ParseException e) {
-            e.printStackTrace();
+        Bundle arguments = getArguments();
+        if (arguments != null) {
+            movieData = arguments.getParcelable(MOVIE_DATA);
+            mTwoPane = arguments.getBoolean(MainActivityFragment.TWO_PANE);
         }
-        Calendar date = new GregorianCalendar();
-        date.setTime(releaseDate);
-        Integer year = date.get(Calendar.YEAR);
-        movieReleaseYear.setText(year.toString());
-        TextView movieRating = (TextView)rootView.findViewById(R.id.movie_rating);
-        movieRating.setText(movieData.getRating() + getString(R.string.max_rating));
-        TextView moviePlot = (TextView)rootView.findViewById(R.id.movie_plot);
-        moviePlot.setText(movieData.getPlot());
-        movieTrailerAdapter = new MovieTrailerAdapter(getActivity(), null, 0);
-        //movieReviewAdapter = new MovieReviewAdapter(getActivity(), null, 0);
-        RecyclerView trailers = (RecyclerView) rootView.findViewById(R.id.trailer_view);
-        //RecyclerView reviews = (RecyclerView) rootView.findViewById(R.id.review_view);
-        reviewsPager = (ViewPager) rootView.findViewById(R.id.review_pager);
-        movieReviewAdapter = new MovieReviewAdapter(getActivity(), null, getChildFragmentManager());
-        reviewsPager.setAdapter(movieReviewAdapter);
-        mIsRestoredFromBackground = false;
-        mTrailerLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-        trailers.setLayoutManager(mTrailerLayoutManager);
-        trailers.setAdapter(movieTrailerAdapter);
+        if(movieDetail.hasExtra(MOVIE_DATA))
+            movieData = movieDetail.getParcelableExtra(MOVIE_DATA);
+        if(movieDetail.hasExtra(MainActivityFragment.TWO_PANE))
+            mTwoPane = movieDetail.getBooleanExtra(MainActivityFragment.TWO_PANE, false);
+        if(movieData != null) {
+            TextView movieTitle = (TextView) rootView.findViewById(R.id.movie_title);
+            movieTitle.setText(movieData.getTitle());
+            final ImageView movieIcon = (ImageView) rootView.findViewById(R.id.movie_icon);
+            ImageButton starIcon = (ImageButton) rootView.findViewById(R.id.star_icon);
+            starIcon.setVisibility(VISIBLE);
+            Cursor cursor  = getActivity().getContentResolver().query(MovieProviderGenerator.Movies.withId(movieData.getId()), new String []{MovieColumns.BOOKMARKED_SW}, null, null, null);
+            cursor.moveToFirst();
+            movieData.setBookMarkedSw(cursor.getString(cursor.getColumnIndex(MovieColumns.BOOKMARKED_SW)));
+            int starBackgroundColor = movieData.getBookMarkedSw().equalsIgnoreCase(FetchMoviesTask.YES) ? R.color.yellow : R.color.grey;
+            starIcon.setBackgroundColor(getResources().getColor(starBackgroundColor));
+                starIcon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        int starBackgroundColor = R.color.yellow;
+                        ImageButton starIcon = (ImageButton) getView().findViewById(R.id.star_icon);
+                        if (movieData.getBookMarkedSw().equalsIgnoreCase(FetchMoviesTask.YES)) {
+                            movieData.setBookMarkedSw(FetchMoviesTask.NO);
+                            starBackgroundColor = R.color.grey;
+                        } else {
+                            movieData.setBookMarkedSw(FetchMoviesTask.YES);
+                            starBackgroundColor = R.color.yellow;
+                        }
+                        starIcon.setBackgroundColor(getResources().getColor(starBackgroundColor));
+                        ContentValues movieValues = new ContentValues();
+                        movieValues.put(MovieColumns.POPULAR_SW, movieData.getPopularSw());
+                        movieValues.put(MovieColumns.BOOKMARKED_SW, movieData.getBookMarkedSw());
+                        movieValues.put(MovieColumns.TOP_RATED_SW, movieData.getTopRatedSw());
+                        movieValues.put(MovieColumns._ID, movieData.getId());
+                        movieValues.put(MovieColumns.BACKDROP_IMG_URL, movieData.getBackdropImageUrl());
+                        movieValues.put(MovieColumns.MOVIE_PLOT, movieData.getPlot());
+                        movieValues.put(MovieColumns.MOVIE_RATING, movieData.getRating());
+                        movieValues.put(MovieColumns.MOVIE_RELEASE, movieData.getReleaseDate());
+                        movieValues.put(MovieColumns.MOVIE_TITLE, movieData.getTitle());
+                        movieValues.put(MovieColumns.POSTER_IMG_URL, movieData.getPosterImageUrl());
+                        getActivity().getContentResolver().update(MovieProviderGenerator.Movies.withId(movieData.getId()), movieValues, null, null);
+                    }
+                });
+            Uri.Builder builder = new Uri.Builder();
+            builder.scheme(SCHEME)
+                    .authority(IMAGE_BASE_URL)
+                    .appendPath("t")
+                    .appendPath("p")
+                    .appendPath(IMAGE_SIZE)
+                    .appendEncodedPath(movieData.getPosterImageUrl());
 
-        //mReviewLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-        //reviews.setLayoutManager(mReviewLayoutManager);
-        //reviews.setAdapter(movieReviewAdapter);
+            Picasso.with(getActivity()).load(builder.build().toString()).into(movieIcon, new Callback() {
+                @Override
+                public void onSuccess() {
 
+                }
+
+                @Override
+                public void onError() {
+                    Picasso.with(getActivity()).load(R.drawable.ic_broken_image_black_24dp).resize(300, 300).centerInside().into(movieIcon);
+                }
+            });
+            //TextView movieTime = (TextView)rootView.findViewById(R.id.movie_time);
+            //movieTime.setText(movieData.get);
+
+            TextView movieReleaseYear = (TextView) rootView.findViewById(R.id.movie_release_year);
+            DateFormat releaseDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date releaseDate = null;
+            try {
+                releaseDate = releaseDateFormat.parse(movieData.getReleaseDate());
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Calendar date = new GregorianCalendar();
+            date.setTime(releaseDate);
+            Integer year = date.get(Calendar.YEAR);
+            movieReleaseYear.setText(year.toString());
+            TextView movieRating = (TextView) rootView.findViewById(R.id.movie_rating);
+            movieRating.setText(movieData.getRating() + getString(R.string.max_rating));
+            TextView moviePlot = (TextView) rootView.findViewById(R.id.movie_plot);
+            moviePlot.setText(movieData.getPlot());
+            movieTrailerAdapter = new MovieTrailerAdapter(getActivity(), null, 0);
+            //movieReviewAdapter = new MovieReviewAdapter(getActivity(), null, 0);
+            RecyclerView trailers = (RecyclerView) rootView.findViewById(R.id.trailer_view);
+            //RecyclerView reviews = (RecyclerView) rootView.findViewById(R.id.review_view);
+            reviewsPager = (ViewPager) rootView.findViewById(R.id.review_pager);
+            movieReviewAdapter = new MovieReviewAdapter(getActivity(), null, getChildFragmentManager());
+            reviewsPager.setAdapter(movieReviewAdapter);
+            mIsRestoredFromBackground = false;
+            mTrailerLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+            trailers.setLayoutManager(mTrailerLayoutManager);
+            trailers.setAdapter(movieTrailerAdapter);
+            TextView trailerTitle = (TextView) rootView.findViewById(R.id.trailer_title);
+            trailerTitle.setVisibility(VISIBLE);
+            TextView reviewTitle = (TextView) rootView.findViewById(R.id.review_title);
+            reviewTitle.setVisibility(VISIBLE);
+            //mReviewLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+            //reviews.setLayoutManager(mReviewLayoutManager);
+            //reviews.setAdapter(movieReviewAdapter);
+        }
         return rootView;
     }
 
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
-        getLoaderManager().initLoader(TRAILER_LOADER_ID, null, this);
-        getLoaderManager().initLoader(REVIEW_LOADER_ID, null, this);
-/*        reviewsPager = (ViewPager) getView().findViewById(R.id.review_pager);
-        movieReviewAdapter = new MovieReviewAdapter(getActivity(), null, getActivity().getSupportFragmentManager());
-        reviewsPager.setAdapter(movieReviewAdapter);*/
+        if(movieData != null) {
+            getLoaderManager().initLoader(TRAILER_LOADER_ID, null, this);
+            getLoaderManager().initLoader(REVIEW_LOADER_ID, null, this);
+        }
         super.onActivityCreated(savedInstanceState);
     }
 
@@ -178,21 +222,22 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     private void showEmptyViewReview() {
         TextView emptyReview = (TextView) getView().findViewById(R.id.review_empty);
         ViewPager review = (ViewPager) getView().findViewById(R.id.review_pager);
-        emptyReview.setVisibility(View.VISIBLE);
+        emptyReview.setVisibility(VISIBLE);
         review.setVisibility(View.GONE);
     }
 
     private void showEmptyViewTrailer() {
         TextView emptyTrailer = (TextView) getView().findViewById(R.id.trailer_empty);
         RecyclerView trailers = (RecyclerView) getView().findViewById(R.id.trailer_view);
-        emptyTrailer.setVisibility(View.VISIBLE);
+        emptyTrailer.setVisibility(VISIBLE);
         trailers.setVisibility(View.GONE);
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putInt(REVIEW_INDEX, reviewsPager.getCurrentItem());
+        if(reviewsPager != null)
+            outState.putInt(REVIEW_INDEX, reviewsPager.getCurrentItem());
     }
 
     @Override
@@ -217,7 +262,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     @Override
     public void onResume() {
         super.onResume();
-        if(!mIsRestoredFromBackground)
+        if(!mIsRestoredFromBackground && reviewsPager != null)
             reviewsPager.setCurrentItem(mReviewIndex);
     }
 
