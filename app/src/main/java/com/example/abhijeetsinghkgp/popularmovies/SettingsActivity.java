@@ -20,10 +20,10 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import java.util.List;
 
@@ -124,18 +124,15 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //LinearLayout root = (LinearLayout) findViewById(android.R.id.list).getParent().getParent().getParent();
+        LinearLayout root = (LinearLayout) findViewById(android.R.id.list).getParent().getParent().getParent();
         //setContentView(R.layout.settings);
-        //LinearLayout toolbarLayout = (LinearLayout) LayoutInflater.from(this).inflate(R.layout.settings, root, false);
-        //Toolbar toolbar = (Toolbar)toolbarLayout.findViewById(R.id.toolbar);
-        //Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        //if(toolbar.getParent()!=null)
-          //((ViewGroup)toolbar.getParent()).removeView(toolbar);
-        //root.addView(toolbar, 0);
-        //setContentView(R.layout.settings);
-        //setTheme(R.style.AppTheme);
-        //setSupportActionBar(toolbar);
-        //setupActionBar();
+        View toolbarLayout = getLayoutInflater().inflate(R.layout.settings, null);
+        Toolbar toolbar = (Toolbar)toolbarLayout.findViewById(R.id.toolbar);
+        if(toolbar.getParent()!=null)
+          ((ViewGroup)toolbar.getParent()).removeView(toolbar);
+        root.addView(toolbar, 0);
+        setSupportActionBar(toolbar);
+        setupActionBar();
     }
 
 
@@ -156,9 +153,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            if (!super.onMenuItemSelected(featureId, item)) {
+            //if (!super.onMenuItemSelected(featureId, item)) {
                 NavUtils.navigateUpFromSameTask(this);
-            }
+            //}
             return true;
         }
         return super.onMenuItemSelected(featureId, item);
@@ -179,10 +176,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public void onBuildHeaders(List<Header> target) {
         loadHeadersFromResource(R.xml.pref_headers, target);
-        setContentView(R.layout.settings);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        setupActionBar();
     }
 
     /**
@@ -202,20 +195,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class GeneralPreferenceFragment extends PreferenceFragment {
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View layout = inflater.inflate(R.layout.settings, container, false);
-            if (layout != null) {
-                AppCompatPreferenceActivity activity = (AppCompatPreferenceActivity) getActivity();
-                Toolbar toolbar = (Toolbar) layout.findViewById(R.id.toolbar);
-                activity.setSupportActionBar(toolbar);
-                ActionBar bar = activity.getSupportActionBar();
-                bar.setHomeButtonEnabled(true);
-                bar.setDisplayHomeAsUpEnabled(true);
-            }
-            return layout;
-        }
-
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -264,20 +243,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View layout = inflater.inflate(R.layout.settings, container, false);
-            //getActivity().setContentView(R.layout.settings);
-            if (layout != null) {
-                AppCompatPreferenceActivity activity = (AppCompatPreferenceActivity) getActivity();
-                Toolbar toolbar = (Toolbar) layout.findViewById(R.id.toolbar);
-                activity.setSupportActionBar(toolbar);
-                ActionBar bar = activity.getSupportActionBar();
-                bar.setHomeButtonEnabled(true);
-                bar.setDisplayHomeAsUpEnabled(true);
-            }
-            return layout;
-        }
-        @Override
         public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
             if (id == android.R.id.home) {
@@ -307,20 +272,6 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             bindPreferenceSummaryToValue(findPreference("sync_frequency"));
         }
 
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            View layout = inflater.inflate(R.layout.settings, container, false);
-            //getActivity().setContentView(R.layout.settings);
-            if (layout != null) {
-                AppCompatPreferenceActivity activity = (AppCompatPreferenceActivity) getActivity();
-                Toolbar toolbar = (Toolbar) layout.findViewById(R.id.toolbar);
-                activity.setSupportActionBar(toolbar);
-                ActionBar bar = activity.getSupportActionBar();
-                bar.setHomeButtonEnabled(true);
-                bar.setDisplayHomeAsUpEnabled(true);
-            }
-            return layout;
-        }
 
         @Override
         public boolean onOptionsItemSelected(MenuItem item) {
