@@ -153,9 +153,9 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
     public boolean onMenuItemSelected(int featureId, MenuItem item) {
         int id = item.getItemId();
         if (id == android.R.id.home) {
-            //if (!super.onMenuItemSelected(featureId, item)) {
+            if (!super.onMenuItemSelected(featureId, item)) {
                 NavUtils.navigateUpFromSameTask(this);
-            //}
+            }
             return true;
         }
         return super.onMenuItemSelected(featureId, item);
@@ -215,7 +215,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         @Override
         public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
-            if (id == android.R.id.home) {
+            if (id == android.R.id.home && !isXLargeTablet(getActivity())) {
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
             }
@@ -245,7 +245,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         @Override
         public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
-            if (id == android.R.id.home) {
+            if (id == android.R.id.home && !isXLargeTablet(getActivity())) {
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
             }
@@ -276,7 +276,7 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
         @Override
         public boolean onOptionsItemSelected(MenuItem item) {
             int id = item.getItemId();
-            if (id == android.R.id.home) {
+            if (id == android.R.id.home && !isXLargeTablet(getActivity())) {
                 startActivity(new Intent(getActivity(), SettingsActivity.class));
                 return true;
             }
