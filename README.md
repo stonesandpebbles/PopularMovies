@@ -1,5 +1,5 @@
 # PopularMovies
-Popular Movies Part 1
+Popular Movies
 
 This app requires the movie database API key. Please generate it from here after registering on the website.
 https://www.themoviedb.org/account/intuitius/api
