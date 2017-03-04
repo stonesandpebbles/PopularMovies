@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,13 +43,17 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
     private BroadcastReceiver networkChangeReceiver;
     private boolean mTwoPane = false;
     public static final String TWO_PANE="twoPane";
-
+    private SwipeRefreshLayout movieRefresh;
+    private GridView gridView;
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         getLoaderManager().initLoader(LOADER_ID, null, this);
         super.onActivityCreated(savedInstanceState);
         this.mTwoPane = ((MainActivity) getActivity()).mTwoPane;
+        moviesAdapter = new MovieAdapter(getActivity(), null, 0, mTwoPane);
+        gridView = (GridView) getView().findViewById(R.id.movies_grid);
+        gridView.setAdapter(moviesAdapter);
     }
 
     public MainActivityFragment() {
@@ -83,6 +88,11 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
             queryOption = MovieColumns.BOOKMARKED_SW;
             getLoaderManager().restartLoader(LOADER_ID, null, this);
             replaceFragmentWithEmpty();
+            return true;
+        }
+
+        if(id == R.id.menu_refresh){
+            refreshView();
             return true;
         }
 
@@ -121,7 +131,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                              Bundle savedInstanceState) {
         View rootView =  inflater.inflate(R.layout.fragment_main, container, false);
         GridView gridView = (GridView) rootView.findViewById(R.id.movies_grid);
-        moviesAdapter = new MovieAdapter(getActivity(), null, 0, mTwoPane);
+
 
         if(getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
             gridView.setNumColumns(LANDSCAPE_COL);
@@ -129,7 +139,7 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
         else{
             gridView.setNumColumns(POTRAIT_COL);
         }
-        gridView.setAdapter(moviesAdapter);
+
 
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
@@ -175,7 +185,24 @@ public class MainActivityFragment extends Fragment implements LoaderManager.Load
                 }
             }
         });
+
+        movieRefresh = (SwipeRefreshLayout) rootView.findViewById(R.id.movie_refresh);
+        movieRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                refreshView();
+            }
+        });
         return rootView;
+    }
+
+    private void refreshView() {
+        Cursor c = moviesAdapter.getCursor();
+        gridView.setAdapter(moviesAdapter);
+        moviesAdapter = new MovieAdapter(getActivity(), null, 0, mTwoPane);
+        moviesAdapter.swapCursor(c);
+        replaceFragmentWithEmpty();
+        movieRefresh.setRefreshing(false);
     }
 
     @Override

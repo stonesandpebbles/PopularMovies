@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -34,6 +35,7 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
     Cursor dataCursor;
     Context mContext;
     boolean isNetworkAvaialable = false;
+    boolean mTwoPane = false;
     /**
      * Recommended constructor.
      *
@@ -43,10 +45,11 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
      *                be any combination of  and
      *                .
      */
-    public MovieTrailerAdapter(Context context, Cursor c, int flags) {
+    public MovieTrailerAdapter(Context context, Cursor c, int flags, boolean mTwoPane) {
         this.dataCursor = c;
         this.mContext = context;
         isNetworkAvaialable = MainActivityFragment.isNetworkAvailable(context);
+        this.mTwoPane = mTwoPane;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -111,9 +114,8 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
         TextView movieTrailerTitle = (TextView) holder.view.findViewById(R.id.video_title);
         movieTrailerTitle.setText(dataCursor.getString(dataCursor.getColumnIndex(MovieTrailerColumns.TRAILER_NAME)));
         final ImageView movieTrailerTile = (ImageView) holder.view.findViewById(R.id.trailer_icon);
+        LinearLayout trailerLayout = (LinearLayout) holder.view.findViewById(R.id.trailer_layout);
 
-        //ViewGroup.MarginLayoutParams params = new ViewGroup.MarginLayoutParams(movieTrailerTileWidth, movieTrailerTileHeight);
-        //movieTrailerTile.setLayoutParams(params);
         final Uri.Builder builder = new Uri.Builder();
 
         builder.scheme(SCHEME)
@@ -121,9 +123,35 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
                 .appendPath(PATH_VI)
                 .appendPath(dataCursor.getString(dataCursor.getColumnIndex(MovieTrailerColumns.TRAILER_URL)))
                 .appendPath(PATH_JPEG);
-        movieTrailerTile.setAdjustViewBounds(true);
-        movieTrailerTile.setPadding(0, 0, 0, 0);
-        Picasso.with(mContext).load(builder.build().toString()).into(movieTrailerTile, new Callback() {
+        //movieTrailerTile.setAdjustViewBounds(true);
+        //movieTrailerTile.setPadding(0, 0, 0, 0);
+        int orientation = mContext.getResources().getConfiguration().orientation;
+        int movieTrailerTileHeight = 0;
+        int movieTrailerTileWidth = 0;
+        int width = mContext.getResources().getDisplayMetrics().widthPixels;
+        int height = mContext.getResources().getDisplayMetrics().heightPixels;
+        if(mTwoPane)
+            width = width/2;
+        if(orientation == Configuration.ORIENTATION_LANDSCAPE){
+            movieTrailerTileHeight = 2*height / 5;
+            if(mTwoPane)
+                movieTrailerTileWidth = 3 *width/4;
+            else
+                movieTrailerTileWidth = 2*width/4;
+        }
+        else{
+            movieTrailerTileWidth = 3*width/4;
+            if(mTwoPane)
+                movieTrailerTileHeight = height/4;
+            else
+                movieTrailerTileHeight = 2*height/4;
+        }
+
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(movieTrailerTileWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
+        trailerLayout.setLayoutParams(params);
+        final int finalMovieTrailerWidth = movieTrailerTileWidth;
+        final int finalMovieTrailerHeight = movieTrailerTileHeight;
+        Picasso.with(mContext).load(builder.build()).into(movieTrailerTile, new Callback() {
             @Override
             public void onSuccess() {
 
@@ -131,21 +159,8 @@ public class MovieTrailerAdapter extends RecyclerView.Adapter<MovieTrailerAdapte
 
             @Override
             public void onError() {
-                int orientation = mContext.getResources().getConfiguration().orientation;
-                int movieTrailerTileHeight = 0;
-                int movieTrailerTileWidth = 0;
-                int width = mContext.getResources().getDisplayMetrics().widthPixels;
-                int height = mContext.getResources().getDisplayMetrics().heightPixels;
-                if(orientation == Configuration.ORIENTATION_LANDSCAPE){
-                    movieTrailerTileHeight = 3*height / 5;
-                    movieTrailerTileWidth = 2*width/5;
-                }
-                else{
-                    movieTrailerTileWidth = 3*width/4;
-                    movieTrailerTileHeight = 2*height/5;
-                }
-                Picasso.with(mContext).load(R.drawable.ic_broken_image_black_24dp).
-                        resize(movieTrailerTileWidth, movieTrailerTileHeight).centerCrop().into(movieTrailerTile);
+
+                Picasso.with(mContext).load(R.drawable.ic_broken_image_black_24dp).into(movieTrailerTile);
             }
         });
         ImageButton movieTrailerPlayButton = (ImageButton) holder.view.findViewById(R.id.play_button);

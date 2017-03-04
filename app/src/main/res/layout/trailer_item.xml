@@ -4,25 +4,27 @@
     android:layout_height="wrap_content"
     android:layout_width="wrap_content"
     android:orientation="vertical"
+    android:id="@+id/trailer_layout"
     android:paddingLeft="@dimen/padding">
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/video_title"
         android:textStyle="bold"
-        android:layout_weight="1"
         android:scrollHorizontally="true"
         android:ellipsize="end"
         android:maxLines="1"
         android:textSize="@dimen/trailer_title"/>
-    <FrameLayout android:layout_width="wrap_content"
+    <FrameLayout android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
         android:layout_gravity="center_horizontal|center_vertical">
         <ImageView
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+            android:minHeight="@dimen/trailer_image_min"
+            android:minWidth="@dimen/trailer_image_max"
             android:id="@+id/trailer_icon" />
         <ImageButton
             android:layout_width="wrap_content"
@@ -35,6 +37,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/share_button"
             android:layout_gravity="right|top"
+            android:adjustViewBounds="true"
             android:src="@android:drawable/ic_menu_share"
             tools:src="?attr/actionModeShareDrawable" />
     <!--<com.google.android.youtube.player.YouTubeThumbnailView

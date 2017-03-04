@@ -1,7 +1,6 @@
 package com.example.abhijeetsinghkgp.popularmovies;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.support.v4.widget.CursorAdapter;
@@ -9,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.example.abhijeetsinghkgp.popularmovies.data.MovieColumns;
 import com.squareup.picasso.Callback;
@@ -72,6 +72,8 @@ public class MovieAdapter extends CursorAdapter {
     public void bindView(View view, Context context, Cursor cursor) {
         //MovieData movieData = (MovieData) getItem(cursor.getPosition());
         final ImageView movieTile = (ImageView) view.findViewById(R.id.movie_image);
+        final TextView movieTitle = (TextView) view.findViewById(R.id.movie_title);
+        movieTitle.setVisibility(View.GONE);
         Uri.Builder builder = new Uri.Builder();
         builder.scheme(SCHEME)
                 .authority(IMAGE_BASE_URL)
@@ -83,7 +85,9 @@ public class MovieAdapter extends CursorAdapter {
         movieTile.setPadding(0, 0, 0, 0);
         int movieTileHeight = 0;
         int movieTileWidth = 0;
-        if(mOrientation == Configuration.ORIENTATION_LANDSCAPE){
+
+        final String movieTitleText = cursor.getString(cursor.getColumnIndex(MovieColumns.MOVIE_TITLE));
+/*        if(mOrientation == Configuration.ORIENTATION_LANDSCAPE){
             if(mTwoPane) {
                 movieTileHeight = height / 2;
                 movieTileWidth = width/6;
@@ -104,20 +108,23 @@ public class MovieAdapter extends CursorAdapter {
             }
         }
         final int finalMovieTileHeight = movieTileHeight;
-        final int finalMovieTileWidth = movieTileWidth;
-
-        Picasso.with(mContext).load(builder.build().toString()).resize(movieTileWidth, movieTileHeight).into(movieTile, new Callback() {
+        final int finalMovieTileWidth = movieTileWidth;*/
+        //ViewGroup.MarginLayoutParams params = new ViewGroup.MarginLayoutParams(movieTileWidth, movieTileHeight);
+        //movieTile.setLayoutParams(params);
+        Picasso.with(mContext).load(builder.build().toString()).into(movieTile, new Callback() {
             @Override
             public void onSuccess() {
-
+                movieTitle.setText(movieTitleText);
+                movieTitle.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onError() {
-                ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(finalMovieTileWidth, finalMovieTileHeight);
-                movieTile.setLayoutParams(params);
+
                 Picasso.with(mContext).load(R.drawable.ic_broken_image_black_24dp).
                         into(movieTile);
+                movieTitle.setText(movieTitleText);
+                movieTitle.setVisibility(View.VISIBLE);
             }
         });
     }

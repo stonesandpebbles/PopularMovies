@@ -11,9 +11,13 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
@@ -48,6 +52,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     private  ViewPager reviewsPager;
     private String REVIEW_INDEX = "REVIEW_INDEX";
     private int mReviewIndex = 0;
+    private SwipeRefreshLayout movieDetailRefresh;
 
     private MovieTrailerAdapter movieTrailerAdapter;
     private MovieReviewAdapter movieReviewAdapter;
@@ -55,6 +60,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     private RecyclerView.LayoutManager mReviewLayoutManager;
     private boolean mIsRestoredFromBackground = true;
     private boolean mTwoPane = false;
+    private RecyclerView trailers;
 
     public DetailActivityFragment() {
     }
@@ -62,7 +68,7 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        setHasOptionsMenu(true);
         View rootView = inflater.inflate(R.layout.fragment_detail, container, false);
         Intent movieDetail = getActivity().getIntent();
         Bundle arguments = getArguments();
@@ -77,7 +83,6 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         if(movieData != null) {
             TextView movieTitle = (TextView) rootView.findViewById(R.id.movie_title);
             movieTitle.setText(movieData.getTitle());
-            final ImageView movieIcon = (ImageView) rootView.findViewById(R.id.movie_icon);
             ImageButton starIcon = (ImageButton) rootView.findViewById(R.id.star_icon);
             starIcon.setVisibility(VISIBLE);
             Cursor cursor  = getActivity().getContentResolver().query(MovieProviderGenerator.Movies.withId(movieData.getId()), new String []{MovieColumns.BOOKMARKED_SW}, null, null, null);
@@ -112,28 +117,10 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
                         getActivity().getContentResolver().update(MovieProviderGenerator.Movies.withId(movieData.getId()), movieValues, null, null);
                     }
                 });
-            Uri.Builder builder = new Uri.Builder();
-            builder.scheme(SCHEME)
-                    .authority(IMAGE_BASE_URL)
-                    .appendPath("t")
-                    .appendPath("p")
-                    .appendPath(IMAGE_SIZE)
-                    .appendEncodedPath(movieData.getPosterImageUrl());
 
-            Picasso.with(getActivity()).load(builder.build().toString()).into(movieIcon, new Callback() {
-                @Override
-                public void onSuccess() {
-
-                }
-
-                @Override
-                public void onError() {
-                    Picasso.with(getActivity()).load(R.drawable.ic_broken_image_black_24dp).resize(300, 300).centerInside().into(movieIcon);
-                }
-            });
             //TextView movieTime = (TextView)rootView.findViewById(R.id.movie_time);
             //movieTime.setText(movieData.get);
-
+            loadMovieImage(rootView);
             TextView movieReleaseYear = (TextView) rootView.findViewById(R.id.movie_release_year);
             DateFormat releaseDateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date releaseDate = null;
@@ -150,10 +137,8 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
             movieRating.setText(movieData.getRating() + getString(R.string.max_rating));
             TextView moviePlot = (TextView) rootView.findViewById(R.id.movie_plot);
             moviePlot.setText(movieData.getPlot());
-            movieTrailerAdapter = new MovieTrailerAdapter(getActivity(), null, 0);
-            //movieReviewAdapter = new MovieReviewAdapter(getActivity(), null, 0);
-            RecyclerView trailers = (RecyclerView) rootView.findViewById(R.id.trailer_view);
-            //RecyclerView reviews = (RecyclerView) rootView.findViewById(R.id.review_view);
+            movieTrailerAdapter = new MovieTrailerAdapter(getActivity(), null, 0, mTwoPane);
+            trailers = (RecyclerView) rootView.findViewById(R.id.trailer_view);
             reviewsPager = (ViewPager) rootView.findViewById(R.id.review_pager);
             movieReviewAdapter = new MovieReviewAdapter(getActivity(), null, getChildFragmentManager());
             reviewsPager.setAdapter(movieReviewAdapter);
@@ -165,11 +150,44 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
             trailerTitle.setVisibility(VISIBLE);
             TextView reviewTitle = (TextView) rootView.findViewById(R.id.review_title);
             reviewTitle.setVisibility(VISIBLE);
-            //mReviewLayoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
-            //reviews.setLayoutManager(mReviewLayoutManager);
-            //reviews.setAdapter(movieReviewAdapter);
+
+            movieDetailRefresh = (SwipeRefreshLayout) rootView.findViewById(R.id.movie_detail_refresh);
+            movieDetailRefresh.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    refreshView();
+                }
+            });
         }
         return rootView;
+    }
+
+    private void loadMovieImage(View view){
+        final ImageView movieIcon = (ImageView) view.findViewById(R.id.movie_icon);
+        Uri.Builder builder = new Uri.Builder();
+        builder.scheme(SCHEME)
+                .authority(IMAGE_BASE_URL)
+                .appendPath("t")
+                .appendPath("p")
+                .appendPath(IMAGE_SIZE)
+                .appendEncodedPath(movieData.getPosterImageUrl());
+
+        Picasso.with(getActivity()).load(builder.build().toString()).into(movieIcon, new Callback() {
+            @Override
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onError() {
+                Picasso.with(getActivity()).load(R.drawable.ic_broken_image_black_24dp).resize(300, 300).centerInside().into(movieIcon);
+            }
+        });
+    }
+    private void refreshView() {
+        trailers.swapAdapter(movieTrailerAdapter, true);
+        loadMovieImage(getView());
+        movieDetailRefresh.setRefreshing(false);
     }
 
 
@@ -182,6 +200,20 @@ public class DetailActivityFragment extends Fragment implements LoaderManager.Lo
         super.onActivityCreated(savedInstanceState);
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.menu_detail, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if(id == R.id.menu_refresh){
+            refreshView();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

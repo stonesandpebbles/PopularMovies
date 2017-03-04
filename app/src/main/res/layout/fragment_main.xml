@@ -4,14 +4,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:foreground="?android:windowContentOverlay">
-    <GridView
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/movie_refresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:numColumns="auto_fit"
-        android:verticalSpacing="0dp"
-        android:horizontalSpacing="0dp"
-        android:id="@+id/movies_grid">
-    </GridView>
+        android:layout_height="match_parent">
+        <GridView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:numColumns="auto_fit"
+            android:verticalSpacing="0dp"
+            android:horizontalSpacing="0dp"
+            android:id="@+id/movies_grid">
+        </GridView>
+    </android.support.v4.widget.SwipeRefreshLayout>
 
     <!-- empty grid -->
     <TextView

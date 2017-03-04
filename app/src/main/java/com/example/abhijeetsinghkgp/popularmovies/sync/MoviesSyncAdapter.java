@@ -50,7 +50,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
 
     // Interval at which to sync with the movie list, in seconds.
     public static final int SYNC_INTERVAL_DAY = 60*60*24;
-    public static final int SYNC_FLEXTIME = SYNC_INTERVAL_DAY /3;
+    public static final int SYNC_FLEXTIME = SYNC_INTERVAL_DAY /20;
 
     private static final long DAY_IN_MILLIS = 1000 * 24;
     private static final int MOVIE_NOTIFICATION_ID = 3004;
@@ -343,7 +343,7 @@ public class MoviesSyncAdapter extends AbstractThreadedSyncAdapter {
          * Since we've created an account
          */
         SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-        int syncFreqInDays = new Integer(prefs.getString("sync_frequency", "1"));
+        int syncFreqInDays = Integer.valueOf(prefs.getString("sync_frequency", "1"));
         MoviesSyncAdapter.configurePeriodicSync(context, SYNC_INTERVAL_DAY * syncFreqInDays, SYNC_FLEXTIME * syncFreqInDays);
 
         /*

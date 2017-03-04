@@ -80,6 +80,7 @@
     <string name="geridview_empty_no_network">No movie information available. The network is not available to fetch movie data.</string>
     <string name="fetching_data">Fetching data. Please wait...</string>
     <string name="max_rating" translatable="false">/10</string>
+    <string name="menu_refresh">Refresh</string>
 
 
 </resources>

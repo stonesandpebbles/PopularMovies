@@ -1,7 +1,24 @@
-<ImageView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:adjustViewBounds="true"
-    android:stretchMode="columnWidth"
-    android:id="@+id/movie_image"/>
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ImageView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:adjustViewBounds="true"
+        android:stretchMode="columnWidth"
+        android:id="@+id/movie_image"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/movie_title"
+        android:layout_gravity="bottom|center_horizontal"
+        android:textColor="#fff"
+        android:gravity="center"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:background="@color/colorPrimary"
+        android:textSize="@dimen/plot_text" />
+
+</FrameLayout>

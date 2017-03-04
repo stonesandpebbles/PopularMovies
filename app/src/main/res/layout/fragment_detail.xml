@@ -1,112 +1,117 @@
-<ScrollView
+<android.support.v4.widget.SwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_height="wrap_content"
+    android:id="@+id/movie_detail_refresh"
     android:layout_width="match_parent"
-    android:fillViewport="true"
-    android:id="@+id/parent_scroll_view">
-    <LinearLayout
-        xmlns:tools="http://schemas.android.com/tools"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <ScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_height="wrap_content"
-        tools:context="com.example.abhijeetsinghkgp.popularmovies.DetailActivityFragment"
-        tools:showIn="@layout/activity_detail">
-        <TextView
+        android:layout_width="match_parent"
+        android:fillViewport="true"
+        android:id="@+id/parent_scroll_view">
+        <LinearLayout
+            xmlns:tools="http://schemas.android.com/tools"
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/movie_title"
-            android:gravity="center"
-            android:textSize="@dimen/movie_title"
-            android:textStyle="bold"
-            android:paddingTop="@dimen/padding"
-            android:paddingBottom="@dimen/padding" />
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_weight="1"
+            tools:context="com.example.abhijeetsinghkgp.popularmovies.DetailActivityFragment"
+            tools:showIn="@layout/activity_detail">
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/movie_icon"
-                android:paddingLeft="@dimen/padding"
-                android:paddingRight="@dimen/padding"/>
+                android:id="@+id/movie_title"
+                android:gravity="center"
+                android:textSize="@dimen/movie_title"
+                android:textStyle="bold"
+                android:paddingTop="@dimen/padding"
+                android:paddingBottom="@dimen/padding" />
             <LinearLayout
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-               <TextView
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:id="@+id/movie_release_year"
-                   android:textSize="@dimen/movie_title"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:id="@+id/movie_rating"
-                    android:textSize="@dimen/movie_title"/>
-
-                <ImageButton
-                    android:layout_width="wrap_content"
+                    android:id="@+id/movie_icon"
+                    android:paddingLeft="@dimen/padding"
+                    android:paddingRight="@dimen/padding"/>
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:id="@+id/star_icon"
-                    android:src ="@android:drawable/btn_star"
-                    android:visibility="gone"
-                    android:background="#00ffffff" />
+                    android:orientation="vertical">
+                   <TextView
+                       android:layout_width="wrap_content"
+                       android:layout_height="wrap_content"
+                       android:id="@+id/movie_release_year"
+                       android:textSize="@dimen/movie_title"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/movie_rating"
+                        android:textSize="@dimen/movie_title"/>
+
+                    <ImageButton
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/star_icon"
+                        android:src ="@android:drawable/btn_star"
+                        android:visibility="gone"
+                        android:background="#00ffffff" />
+
+                </LinearLayout>
 
             </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/movie_plot"
+                android:textSize="@dimen/plot_text"
+                android:padding="@dimen/padding"/>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/trailer_title"
+                android:text="@string/trailers"
+                android:visibility="gone"
+                android:textSize="@dimen/trailer_heading"
+                android:textStyle="bold"
+                android:paddingBottom="@dimen/padding"
+                android:paddingLeft="@dimen/padding"/>
+
+            <android.support.v7.widget.RecyclerView
+                android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment"
+                android:id="@+id/trailer_view"
+                android:scrollbars="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/padding">
+
+            </android.support.v7.widget.RecyclerView>
+            <include layout="@layout/trailer_empty" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/review_title"
+                android:text="@string/reviews"
+                android:visibility="gone"
+                android:textSize="@dimen/trailer_heading"
+                android:textStyle="bold"
+                android:paddingTop="@dimen/padding"
+                android:paddingBottom="@dimen/padding"
+                android:paddingLeft="@dimen/padding"/>
+
+            <android.support.v4.view.ViewPager
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/review_pager"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/viewpager_height"
+                android:paddingRight="@dimen/activity_vertical_margin"
+                android:paddingBottom="@dimen/padding"/>
+            <include layout="@layout/review_empty" />
         </LinearLayout>
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/movie_plot"
-            android:textSize="@dimen/padding"
-            android:padding="@dimen/padding"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/trailer_title"
-            android:text="@string/trailers"
-            android:visibility="gone"
-            android:textSize="@dimen/trailer_heading"
-            android:textStyle="bold"
-            android:paddingBottom="@dimen/padding"
-            android:paddingLeft="@dimen/padding"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:name="com.google.android.youtube.player.YouTubePlayerSupportFragment"
-            android:id="@+id/trailer_view"
-            android:scrollbars="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:paddingRight="@dimen/padding">
-
-        </android.support.v7.widget.RecyclerView>
-        <include layout="@layout/trailer_empty" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/review_title"
-            android:text="@string/reviews"
-            android:visibility="gone"
-            android:textSize="@dimen/trailer_heading"
-            android:textStyle="bold"
-            android:paddingTop="@dimen/padding"
-            android:paddingBottom="@dimen/padding"
-            android:paddingLeft="@dimen/padding"/>
-
-        <android.support.v4.view.ViewPager
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/review_pager"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/viewpager_height"
-            android:paddingRight="@dimen/activity_vertical_margin"
-            android:paddingBottom="@dimen/padding"/>
-        <include layout="@layout/review_empty" />
-    </LinearLayout>
-</ScrollView>
+    </ScrollView>
+    </android.support.v4.widget.SwipeRefreshLayout>
